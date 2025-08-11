@@ -4,6 +4,9 @@ import { PerfilFuncionalidadeAcoes } from '../perfil_funcionalidade_acoes/perfil
 
 @Entity({ name: 'perfis' })
 export class Perfis {
+  listarPerfis(): Perfis[] | PromiseLike<Perfis[]> {
+      throw new Error('Method not implemented.');
+  }
   @PrimaryColumn({ name: 'co_perfil', type: 'int' })
   coPerfil: number;
 

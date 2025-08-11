@@ -1,0 +1,15 @@
+
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    container_name: meu_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: DB_Gestao_de_Acessos
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./dados_postgres:/var/lib/postgresql/data

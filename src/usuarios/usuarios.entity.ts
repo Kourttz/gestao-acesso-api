@@ -6,7 +6,7 @@ export class Usuarios {
   @PrimaryColumn({
     name: 'co_usuario',
     type: 'int',
-    generated: true // Se for auto-incremento
+    generated: true 
   })
   coUsuario: number;
 
@@ -23,7 +23,7 @@ export class Usuarios {
     type: 'varchar',
     length: 50,
     nullable: false,
-    unique: true // Matrícula deve ser única
+    unique: true 
   })
   coMatricula: string;
 
@@ -32,14 +32,14 @@ export class Usuarios {
     type: 'varchar',
     length: 255,
     nullable: false,
-    unique: true // Email deve ser único
+    unique: true 
   })
   noEmail: string;
 
   @Column({
     name: 'ic_situacao_ativo',
     type: 'bit',
-    default: true // Ativo por padrão
+    default: true 
   })
   icSituacaoAtivo: boolean;
 
