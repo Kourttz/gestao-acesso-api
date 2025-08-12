@@ -14,13 +14,13 @@ export class PerfilFuncionalidadeAcoes {
 
   @ManyToOne(() => Perfis, (perfil) => perfil.perfilFuncionalidadeAcoes)
   @JoinColumn({ name: 'co_perfil' })
-  perfil: Perfis;
+  coPerfil: Perfis;
 
   @ManyToOne(() => Funcionalidades, (funcionalidade) => funcionalidade.perfilFuncionalidadeAcoes)
   @JoinColumn({ name: 'co_funcionalidade' })
-  funcionalidade: Funcionalidades;
+  coFuncionalidade: Funcionalidades;
 
   @ManyToOne(() => Acoes, (acao) => acao.perfilFuncionalidadeAcoes)
   @JoinColumn({ name: 'co_acao' })
-  acao: Acoes;
+  coAcao: Acoes;
 }

@@ -12,6 +12,6 @@ export class Sistemas {
   @Column({ name: 'ic_situacao_ativo', type: 'bit' })
   icSituacaoAtivo: boolean;
 
-  @OneToMany(() => Funcionalidades, (funcionalidade) => funcionalidade.sistema)
+  @OneToMany(() => Funcionalidades, (funcionalidade) => funcionalidade.coSistema)
   funcionalidades: Funcionalidades[];
 }

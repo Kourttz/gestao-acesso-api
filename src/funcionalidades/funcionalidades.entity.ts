@@ -28,7 +28,7 @@ export class Funcionalidades {
 
   @ManyToOne(() => Sistemas, (sistema) => sistema.funcionalidades)
   @JoinColumn({ name: 'co_sistemas' })
-  sistema: Sistemas;
+  coSistema: Sistemas;
 
   @Column({
     name: 'ic_situacao_ativo',
@@ -37,6 +37,6 @@ export class Funcionalidades {
   })
   icSituacaoAtivo: boolean;
 
-  @OneToMany(() => PerfilFuncionalidadeAcoes, (pfa) => pfa.funcionalidade)
+  @OneToMany(() => PerfilFuncionalidadeAcoes, (pfa) => pfa.coFuncionalidade)
   perfilFuncionalidadeAcoes: PerfilFuncionalidadeAcoes[];
 }

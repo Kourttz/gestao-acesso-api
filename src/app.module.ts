@@ -19,7 +19,7 @@ import { PerfilFuncionalidadeAcoesModule } from './perfil_funcionalidade_acoes/p
       username:process.env.DB_USERNAME,
       password:process.env.DB_PASSWORD,
       synchronize:false,
-      logging:false,
+      logging:true,
       entities:[__dirname + '/**/*.entity{.js,.ts}'],
     }),
     PerfisModule,

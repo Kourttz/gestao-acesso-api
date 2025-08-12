@@ -18,10 +18,10 @@ export class Acoes {
 
   @Column({ 
     name: 'ic_situacao_ativo', 
-    type: 'bit' 
+    type: 'boolean' 
   })
   icSituacaoAtivo: boolean;
 
-  @OneToMany(() => PerfilFuncionalidadeAcoes, (pfa) => pfa.acao)
+  @OneToMany(() => PerfilFuncionalidadeAcoes, (pfa) => pfa.coAcao)
   perfilFuncionalidadeAcoes: PerfilFuncionalidadeAcoes[];
 }

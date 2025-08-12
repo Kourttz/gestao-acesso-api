@@ -19,6 +19,6 @@ export class Perfis {
   @OneToMany(() => Usuarios, (usuario) => usuario.perfil)
   usuarios: Usuarios[];
 
-  @OneToMany(() => PerfilFuncionalidadeAcoes, (pfa) => pfa.perfil)
+  @OneToMany(() => PerfilFuncionalidadeAcoes, (pfa) => pfa.coPerfil)
   perfilFuncionalidadeAcoes: PerfilFuncionalidadeAcoes[];
 }
