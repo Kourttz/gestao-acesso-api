@@ -13,7 +13,7 @@ export class Perfis {
   @Column({ name: 'no_perfil', type: 'varchar', length: 255 })
   noPerfil: string;
 
-  @Column({ name: 'ic_situacao_ativo', type: 'bit' })
+  @Column({ name: 'ic_situacao_ativo', type: 'bit', default: true })
   icSituacaoAtivo: boolean;
 
   @OneToMany(() => Usuarios, (usuario) => usuario.perfil)

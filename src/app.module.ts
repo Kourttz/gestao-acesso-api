@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import {TypeOrmModule} from '@nestjs/typeORM';
+import {TypeOrmModule} from '@nestjs/typeorm';
 import {ConfigModule} from '@nestjs/config';
 import { PerfisModule } from './perfis/perfis.module';
 import { SistemasModule } from './sistemas/sistemas.module';
@@ -19,7 +19,7 @@ import { PerfilFuncionalidadeAcoesModule } from './perfil_funcionalidade_acoes/p
       username:process.env.DB_USERNAME,
       password:process.env.DB_PASSWORD,
       synchronize:false,
-      logging:true,
+      logging:false,
       entities:[__dirname + '/**/*.entity{.js,.ts}'],
     }),
     PerfisModule,

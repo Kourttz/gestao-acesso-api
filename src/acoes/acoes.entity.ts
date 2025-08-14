@@ -18,7 +18,8 @@ export class Acoes {
 
   @Column({ 
     name: 'ic_situacao_ativo', 
-    type: 'boolean' 
+    type: 'boolean',
+    default: true 
   })
   icSituacaoAtivo: boolean;
 

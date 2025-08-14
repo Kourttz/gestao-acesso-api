@@ -1,39 +1,65 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { CriarPerfilDto, AtualizarPerfilDto, DeletarPerfilDto, AlternarStatusPerfilDto } from './perfis.dto';
 import { Perfis } from './perfis.entity';
 import { PerfisService } from './perfis.service';
 
+@ApiTags('Perfis')
 @Controller('perfis')
 export class PerfisController {
-    constructor(private readonly perfisService: PerfisService) {}
-    
-    @Get()
-    async listar(): Promise<Perfis[]> {
-      return this.perfisService.listarPerfis();
-    }
+  constructor(private readonly perfisService: PerfisService) {}
 
-    @Post()
-    async criar(@Body() dados: Partial<Perfis>): Promise<Perfis> {
-      return this.perfisService.criarPerfil(dados);
-    }
+  @Get()
+  @ApiOperation({ summary: 'Lista todos os perfis' })
+  async listar(): Promise<Perfis[]> {
+    return this.perfisService.listarPerfis();
+  }
 
-    @Post('atualizar')
-    async atualizar(@Body() dados: Partial<Perfis>): Promise<Perfis> {
-        return this.perfisService.atualizarPerfil(dados);
+  @Post()
+  @ApiOperation({ summary: 'Cria um novo perfil' })
+  @ApiBody({ type: CriarPerfilDto, examples: {
+    exemplo: {
+      summary: 'Exemplo de criação',
+      value: { coPerfil: 1, noPerfil: 'Administrador', icSituacaoAtivo: true }
     }
+  }})
+  async criar(@Body() dados: CriarPerfilDto): Promise<Perfis> {
+    return this.perfisService.criarPerfil(dados);
+  }
 
-    @Post('deletar')
-    async deletar(@Body() dados: Partial<Perfis>): Promise<void> {
-        if (!dados.coPerfil) {
-            throw new Error('coPerfil é obrigatório para deletar o perfil');
-        }
-        return this.perfisService.deletarPerfil(dados.coPerfil);
+  @Post('atualizar')
+  @ApiOperation({ summary: 'Atualiza um perfil existente' })
+  @ApiBody({ type: AtualizarPerfilDto, examples: {
+    exemplo: {
+      summary: 'Exemplo de atualização',
+      value: { coPerfil: 1, noPerfil: 'Usuário', icSituacaoAtivo: false }
     }
+  }})
+  async atualizar(@Body() dados: AtualizarPerfilDto): Promise<Perfis> {
+    return this.perfisService.atualizarPerfil(dados);
+  }
 
-    @Post('alternarStatus')
-    async alternarStatus(@Body() dados: { coPerfil: number }): Promise<Perfis> {
-      if (typeof dados.coPerfil !== 'number') {
-        throw new Error('coPerfil (number) é obrigatório');
-      }
-      return this.perfisService.alternarStatus(dados.coPerfil);
+  @Post('deletar')
+  @ApiOperation({ summary: 'Deleta um perfil existente' })
+  @ApiBody({ type: DeletarPerfilDto, examples: {
+    exemplo: {
+      summary: 'Exemplo de deleção',
+      value: { coPerfil: 1 }
     }
+  }})
+  async deletar(@Body() dados: DeletarPerfilDto): Promise<void> {
+    return this.perfisService.deletarPerfil(dados.coPerfil);
+  }
+
+  @Post('alternarStatus')
+  @ApiOperation({ summary: 'Alterna o status ativo/inativo de um perfil' })
+  @ApiBody({ type: AlternarStatusPerfilDto, examples: {
+    exemplo: {
+      summary: 'Exemplo de alternância de status',
+      value: { coPerfil: 1 }
+    }
+  }})
+  async alternarStatus(@Body() dados: AlternarStatusPerfilDto): Promise<Perfis> {
+    return this.perfisService.alternarStatus(dados.coPerfil);
+  }
 }

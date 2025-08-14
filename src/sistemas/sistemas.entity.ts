@@ -9,7 +9,7 @@ export class Sistemas {
   @Column({ name: 'no_sistema', type: 'varchar', length: 255 })
   noSistema: string;
 
-  @Column({ name: 'ic_situacao_ativo', type: 'bit' })
+  @Column({ name: 'ic_situacao_ativo', type: 'bit', default: true })
   icSituacaoAtivo: boolean;
 
   @OneToMany(() => Funcionalidades, (funcionalidade) => funcionalidade.coSistema)

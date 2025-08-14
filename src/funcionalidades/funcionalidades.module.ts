@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { FuncionalidadesController } from './funcionalidades.controller';
 import { FuncionalidadesService } from './funcionalidades.service';
-import { TypeOrmModule } from '@nestjs/typeORM';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Funcionalidades } from './funcionalidades.entity';
 
 @Module({
