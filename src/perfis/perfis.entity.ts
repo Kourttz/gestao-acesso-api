@@ -1,8 +1,8 @@
 import { Entity, PrimaryColumn, Column ,OneToMany} from 'typeorm';
 import { Usuarios } from '../usuarios/usuarios.entity';
-import { PerfilFuncionalidadeAcoes } from '../perfil_funcionalidade_acoes/perfil_funcionalidade_acoes.entity'
+import { PerfilFuncionalidadeAcao } from '../perfil_funcionalidade_acao/perfil_funcionalidade_acao.entity'
 
-@Entity({ name: 'perfis' })
+@Entity({ name: 'tb_perfis' })
 export class Perfis {
   listarPerfis(): Perfis[] | PromiseLike<Perfis[]> {
       throw new Error('Method not implemented.');
@@ -19,6 +19,6 @@ export class Perfis {
   @OneToMany(() => Usuarios, (usuario) => usuario.perfil)
   usuarios: Usuarios[];
 
-  @OneToMany(() => PerfilFuncionalidadeAcoes, (pfa) => pfa.coPerfil)
-  perfilFuncionalidadeAcoes: PerfilFuncionalidadeAcoes[];
+  @OneToMany(() => PerfilFuncionalidadeAcao, (pfa) => pfa.coPerfil)
+  perfilFuncionalidadeAcoes: PerfilFuncionalidadeAcao[];
 }

@@ -1,20 +1,20 @@
 import { Controller,Get,Post,Body,Param,ParseIntPipe } from '@nestjs/common';
 import { ApiTags,ApiOperation,ApiParam,ApiBody,ApiResponse } from '@nestjs/swagger';
-import { PerfilFuncionalidadeAcoesService } from './perfil_funcionalidade_acoes.service';
-import { PerfilFuncionalidadeAcoes } from './perfil_funcionalidade_acoes.entity';
+import { MenusSistemasService } from './menus_sistemas.service';
+import { MenusSistemas } from './menus_sistemas.entity';
 
-@ApiTags('Perfil Funcionalidade Ações')
-@Controller('perfil-funcionalidade-acoes')
-export class PerfilFuncionalidadeAcoesController {
+@ApiTags('Menus Sistemas')
+@Controller('MS')
+export class MenusSistemasController {
   constructor(
-    private readonly PerfilFuncionalidadeAcoesService: PerfilFuncionalidadeAcoesService,
+    private readonly MenusSistemasService: MenusSistemasService,
   ) {}
 
   @Get()
   @ApiOperation({ summary: 'Listar todas as ações de perfil-funcionalidade' })
-  @ApiResponse({status: 200,description: 'Lista de ações retornada com sucesso.',type: [PerfilFuncionalidadeAcoes]})
-  async listar(): Promise<PerfilFuncionalidadeAcoes[]> {
-    return this.PerfilFuncionalidadeAcoesService.listarPFA();
+  @ApiResponse({status: 200,description: 'Lista de ações retornada com sucesso.',type: [MenusSistemas]})
+  async listar(): Promise<MenusSistemas[]> {
+    return this.MenusSistemasService.listarMS();
   }
 
   @Get(':co_perfil')
@@ -24,14 +24,14 @@ export class PerfilFuncionalidadeAcoesController {
   async obterPorPerfil(
     @Param('co_perfil', ParseIntPipe) co_perfil: number,
   ) {
-    return this.PerfilFuncionalidadeAcoesService.getPermissoesAgrupadasPorPerfil(
+    return this.MenusSistemasService.getPermissoesAgrupadasPorPerfil(
       co_perfil,
     );
   }
 
-  @Post(':coPerfil')
+  @Post(':coMenu')
   @ApiOperation({ summary: 'Atualizar ou cadastrar funcionalidades para um perfil'})
-  @ApiParam({name: 'coPerfil',type: Number,description: 'Código do perfil'})
+  @ApiParam({name: 'coMenu',type: Number,description: 'Código do perfil'})
   @ApiBody({
     description:
       'Objeto contendo funcionalidades e ações, ex: { "co_funcionalidade": {  "1" (acoes): [1 (Cadastrar), 2 (Visualizar), 4 (Deletar)], "2" (funcionalidades): [2 (Visualizar), 5 (Inativar)] } }',
@@ -58,11 +58,11 @@ export class PerfilFuncionalidadeAcoesController {
     description: 'Perfil atualizado com sucesso!',
   })
   async atualizarOuCadastrar(
-    @Param('coPerfil', ParseIntPipe) coPerfil: number,
+    @Param('coMenu', ParseIntPipe) coMenu: number,
     @Body('co_funcionalidade') funcionalidades: Record<number, number[]>,
   ) {
-    await this.PerfilFuncionalidadeAcoesService.atualizarOuCadastrar(
-      coPerfil,
+    await this.MenusSistemasService.atualizarOuCadastrar(
+      coMenu,
       funcionalidades,
     );
     return { message: 'Perfil atualizado com sucesso!' };

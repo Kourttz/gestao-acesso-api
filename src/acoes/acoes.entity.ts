@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import {PerfilFuncionalidadeAcoes } from '../perfil_funcionalidade_acoes/perfil_funcionalidade_acoes.entity'
+import {PerfilFuncionalidadeAcao } from '../perfil_funcionalidade_acao/perfil_funcionalidade_acao.entity'
 
-@Entity({ name: 'acoes' })
+@Entity({ name: 'tb_acoes' })
 export class Acoes {
   @PrimaryGeneratedColumn({ 
     name: 'co_acao',
@@ -23,6 +23,6 @@ export class Acoes {
   })
   icSituacaoAtivo: boolean;
 
-  @OneToMany(() => PerfilFuncionalidadeAcoes, (pfa) => pfa.coAcao)
-  perfilFuncionalidadeAcoes: PerfilFuncionalidadeAcoes[];
+  @OneToMany(() => PerfilFuncionalidadeAcao, (pfa) => pfa.coAcao)
+  perfilFuncionalidadeAcoes: PerfilFuncionalidadeAcao[];
 }

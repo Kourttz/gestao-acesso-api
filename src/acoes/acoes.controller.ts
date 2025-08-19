@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Patch, Delete, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { CriarAcaoDto, AtualizarAcaoDto, DeletarAcaoDto, AlternarStatusDto } from './acoes.dto';
 import { AcoesService } from './acoes.service';
@@ -20,14 +20,14 @@ export class AcoesController {
   @ApiBody({ type: CriarAcaoDto, examples: {
     exemplo: {
       summary: 'Exemplo de criação',
-      value: { coAcao: 1, noAcao: 'Ação de teste', icSituacaoAtivo: true }
+      value: { noAcao: 'Ação de teste', icSituacaoAtivo: true }
     }
   }})
   async criar(@Body() dados: CriarAcaoDto): Promise<Acoes> {
     return this.acoesService.criarAcao(dados);
   }
 
-  @Post('atualizar')
+  @Patch()
   @ApiOperation({ summary: 'Atualiza uma ação existente' })
   @ApiBody({ type: AtualizarAcaoDto, examples: {
     exemplo: {
@@ -39,7 +39,7 @@ export class AcoesController {
     return this.acoesService.atualizarAcao(dados);
   }
 
-  @Post('deletar')
+  @Delete()
   @ApiOperation({ summary: 'Deleta uma ação existente' })
   @ApiBody({ type: DeletarAcaoDto, examples: {
     exemplo: {
@@ -51,7 +51,7 @@ export class AcoesController {
     return this.acoesService.deletarAcao(dados.coAcao);
   }
 
-  @Post('alternarStatus')
+  @Put()
   @ApiOperation({ summary: 'Alterna o status ativo/inativo da ação' })
   @ApiBody({ type: AlternarStatusDto, examples: {
     exemplo: {

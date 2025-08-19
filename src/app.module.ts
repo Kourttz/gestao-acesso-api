@@ -6,7 +6,9 @@ import { SistemasModule } from './sistemas/sistemas.module';
 import { AcoesModule } from './acoes/acoes.module';
 import { FuncionalidadesModule } from './funcionalidades/funcionalidades.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
-import { PerfilFuncionalidadeAcoesModule } from './perfil_funcionalidade_acoes/perfil_funcionalidade_acoes.module';
+import { PerfilFuncionalidadeAcaoModule } from './perfil_funcionalidade_acao/perfil_funcionalidade_acao.module';
+import { MenusSistemasModule } from './menus_sistemas/menus_sistemas.module';
+import { MenusModule } from './menus/menus.module';
 
 @Module({
   imports: [
@@ -26,8 +28,10 @@ import { PerfilFuncionalidadeAcoesModule } from './perfil_funcionalidade_acoes/p
     SistemasModule,
     AcoesModule,
     FuncionalidadesModule,
+    MenusModule,
+    MenusSistemasModule,
     UsuariosModule,
-    PerfilFuncionalidadeAcoesModule
+    PerfilFuncionalidadeAcaoModule
   ],
   controllers: [],
   providers: [],

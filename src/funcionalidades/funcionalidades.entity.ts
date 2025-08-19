@@ -1,8 +1,8 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
 import { Sistemas } from '../sistemas/sistemas.entity';
-import { PerfilFuncionalidadeAcoes } from '../perfil_funcionalidade_acoes/perfil_funcionalidade_acoes.entity'
+import { PerfilFuncionalidadeAcao } from '../perfil_funcionalidade_acao/perfil_funcionalidade_acao.entity'
 
-@Entity({ name: 'funcionalidades' })
+@Entity({ name: 'tb_funcionalidades' })
 export class Funcionalidades {
   @PrimaryColumn({
     name: 'co_funcionalidade',
@@ -37,6 +37,6 @@ export class Funcionalidades {
   })
   icSituacaoAtivo: boolean;
 
-  @OneToMany(() => PerfilFuncionalidadeAcoes, (pfa) => pfa.coFuncionalidade)
-  perfilFuncionalidadeAcoes: PerfilFuncionalidadeAcoes[];
+  @OneToMany(() => PerfilFuncionalidadeAcao, (pfa) => pfa.coFuncionalidade)
+  perfilFuncionalidadeAcoes: PerfilFuncionalidadeAcao[];
 }

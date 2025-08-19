@@ -1,66 +1,68 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PerfilFuncionalidadeAcoes } from './perfil_funcionalidade_acoes.entity';
-import { Acoes } from '../acoes/acoes.entity'; 
+import { MenusSistemas } from './menus_sistemas.entity';
+import { Menus } from '../menus/menus.entity';
+import { Sistemas } from '../sistemas/sistemas.entity';
 
 @Injectable()
-export class PerfilFuncionalidadeAcoesService {
+export class MenusSistemasService {
   constructor(
-    @InjectRepository(PerfilFuncionalidadeAcoes)
-    private readonly PerfilFuncionalidadeAcoesRepository: Repository<PerfilFuncionalidadeAcoes>,
-    @InjectRepository(Acoes)
-    private readonly AcoesRepository: Repository<Acoes>, // 
+    @InjectRepository(MenusSistemas)
+    private readonly MenusSistemasRepository: Repository<MenusSistemas>,
   ) {}
 
-  async listarPFA(): Promise<PerfilFuncionalidadeAcoes[]> {
-    return this.PerfilFuncionalidadeAcoesRepository.find({
-      relations: ['coPerfil', 'coFuncionalidade', 'coAcao'],
+  async listarMS(): Promise<MenusSistemas[]> {
+    return this.MenusSistemasRepository.find({
+      relations: ['coMenu', 'coSistema'],
     });
   }
 
   async atualizarOuCadastrar(
-    coPerfil: number,
-    funcionalidades: Record<number, number[]>,
+    dados: Record<number, number[]>, 
   ): Promise<void> {
-    await this.PerfilFuncionalidadeAcoesRepository.delete({ coPerfil: { coPerfil } });
+    for (const [coMenu, sistemas] of Object.entries(dados)) {
+      const menuId = Number(coMenu);
+  
 
-    if (funcionalidades && Object.keys(funcionalidades).length > 0) {
-      const novosPFAs: PerfilFuncionalidadeAcoes[] = [];
-
-      for (const [coFuncionalidade, acoes] of Object.entries(funcionalidades)) {
-        for (const coAcao of acoes) {
-          const pfa = this.PerfilFuncionalidadeAcoesRepository.create({
-            coPerfil: { coPerfil: Number(coPerfil) },
-            coFuncionalidade: { coFuncionalidade: Number(coFuncionalidade) },
-            coAcao: { coAcao: Number(coAcao) },
-          });
-          novosPFAs.push(pfa);
-        }
+      await this.MenusSistemasRepository.createQueryBuilder()
+        .delete()
+        .where("co_menu = :menuId", { menuId })
+        .execute();
+  
+      
+      if (sistemas && sistemas.length > 0) {
+        const novosMS: MenusSistemas[] = sistemas.map((coSistema) =>
+          this.MenusSistemasRepository.create({
+            coMenu: { coMenu: menuId } as Menus,               
+            coSistemas: { coSistema: Number(coSistema) } as Sistemas, 
+          })
+        );
+  
+        await this.MenusSistemasRepository.save(novosMS);
       }
-
-      await this.PerfilFuncionalidadeAcoesRepository.save(novosPFAs);
     }
   }
+    
 
-  async getPermissoesAgrupadasPorPerfil(coPerfil: number) {
-    const registros = await this.AcoesRepository
+  async getPermissoesAgrupadasPorPerfil(coMenu: number) {
+    const registros = await this.MenusSistemasRepository
       .createQueryBuilder('a')
       .leftJoin(
         'perfil_funcionalidade_acoes',
         'pfa',
-        'pfa.co_acao = a.co_acao AND pfa.co_perfil = :coPerfil',
-        { coPerfil },
+        'pfa.co_acao = a.co_acao AND pfa.co_perfil = :coMenu',
+        { coMenu },
       )
       .leftJoinAndSelect('pfa.coFuncionalidade', 'f')
-      .leftJoinAndSelect('pfa.coPerfil', 'p')
+      .leftJoinAndSelect('pfa.coMenu', 'p')
       .addSelect(
         `CASE WHEN pfa.co_perfil_funcionalidade_acoes IS NOT NULL THEN true ELSE false END`,
         'vinculada',
       )
       .getRawMany();
   
-    // Cria mapa de funcionalidades existentes
+    // Cria mapa de sistemas existentes
     const funcionalidadesMap: Record<number, { co_funcionalidade: number; no_funcionalidade: string; acoes: any[] }> = {};
   
     registros.forEach(r => {
@@ -105,8 +107,8 @@ export class PerfilFuncionalidadeAcoesService {
   
     return [
       {
-        co_perfil: coPerfil,
-        no_perfil: registros.find(r => r.p_co_perfil === coPerfil)?.p_no_perfil || '',
+        co_perfil: coMenu,
+        no_perfil: registros.find(r => r.p_co_perfil === coMenu)?.p_no_perfil || '',
         funcionalidades: Object.values(funcionalidadesMap),
       },
     ];

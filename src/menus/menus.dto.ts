@@ -1,6 +1,6 @@
 import { IsNumber, IsString, IsBoolean, Min } from 'class-validator';
 
-export class CriarAcaoDto {
+export class CriarMenuDto {
   @IsString()
   noAcao: string;
 
@@ -8,26 +8,26 @@ export class CriarAcaoDto {
   icSituacaoAtivo: boolean;
 }
 
-export class AtualizarAcaoDto {
+export class AtualizarMenuDto {
     @IsNumber()
     @Min(1)
-    coAcao: number;
+    coMenu: number;
   
     @IsString()
-    noAcao: string;
+    noMenu: string;
   
     @IsBoolean()
     icSituacaoAtivo: boolean;
 }
 
-export class DeletarAcaoDto {
+export class DeletarMenuDto {
     @IsNumber()
     @Min(1)
-    coAcao: number;
+    coMenu: number;
 }
 
 export class AlternarStatusDto {
     @IsNumber()
     @Min(1)
-    coAcao: number;
+    coMenu: number;
 }

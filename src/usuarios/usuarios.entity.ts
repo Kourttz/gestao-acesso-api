@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Perfis } from '../perfis/perfis.entity';
 
-@Entity({ name: 'usuarios' })
+@Entity({ name: 'tb_usuarios' })
 export class Usuarios {
   @PrimaryColumn({
     name: 'co_usuario',

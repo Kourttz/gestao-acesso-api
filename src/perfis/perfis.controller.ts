@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { CriarPerfilDto, AtualizarPerfilDto, DeletarPerfilDto, AlternarStatusPerfilDto } from './perfis.dto';
 import { Perfis } from './perfis.entity';
@@ -27,7 +27,7 @@ export class PerfisController {
     return this.perfisService.criarPerfil(dados);
   }
 
-  @Post('atualizar')
+  @Patch()
   @ApiOperation({ summary: 'Atualiza um perfil existente' })
   @ApiBody({ type: AtualizarPerfilDto, examples: {
     exemplo: {
@@ -39,7 +39,7 @@ export class PerfisController {
     return this.perfisService.atualizarPerfil(dados);
   }
 
-  @Post('deletar')
+  @Delete()
   @ApiOperation({ summary: 'Deleta um perfil existente' })
   @ApiBody({ type: DeletarPerfilDto, examples: {
     exemplo: {
@@ -51,7 +51,7 @@ export class PerfisController {
     return this.perfisService.deletarPerfil(dados.coPerfil);
   }
 
-  @Post('alternarStatus')
+  @Put()
   @ApiOperation({ summary: 'Alterna o status ativo/inativo de um perfil' })
   @ApiBody({ type: AlternarStatusPerfilDto, examples: {
     exemplo: {

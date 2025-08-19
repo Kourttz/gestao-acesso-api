@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
 import { Funcionalidades } from '../funcionalidades/funcionalidades.entity';
 
-@Entity({ name: 'sistemas' })
+@Entity({ name: 'tb_sistemas' })
 export class Sistemas {
   @PrimaryColumn({ name: 'co_sistema', type: 'int' })
   coSistema: number;

@@ -1,10 +1,6 @@
 import { IsNumber, IsString, IsBoolean, Min } from 'class-validator';
 
 export class CriarFuncionalidadeDto {
-  @IsNumber()
-  @Min(1)
-  coFuncionalidade: number;
-
   @IsString()
   noFuncionalidade: string;
 

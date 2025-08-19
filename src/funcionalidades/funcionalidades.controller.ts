@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Patch, Delete, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { CriarFuncionalidadeDto, AtualizarFuncionalidadeDto, DeletarFuncionalidadeDto, AlternarStatusFuncionalidadeDto } from './funcionalidades.dto';
 import { FuncionalidadesService } from './funcionalidades.service';
@@ -27,7 +27,7 @@ export class FuncionalidadesController {
     return this.funcionalidadesService.criarFuncionalidade(dados);
   }
 
-  @Post('atualizar')
+  @Patch()
   @ApiOperation({ summary: 'Atualiza uma funcionalidade existente' })
   @ApiBody({ type: AtualizarFuncionalidadeDto, examples: {
     exemplo: {
@@ -39,7 +39,7 @@ export class FuncionalidadesController {
     return this.funcionalidadesService.atualizarFuncionalidade(dados);
   }
 
-  @Post('deletar')
+  @Delete()
   @ApiOperation({ summary: 'Deleta uma funcionalidade existente' })
   @ApiBody({ type: DeletarFuncionalidadeDto, examples: {
     exemplo: {
@@ -51,7 +51,7 @@ export class FuncionalidadesController {
     return this.funcionalidadesService.deletarFuncionalidade(dados.coFuncionalidade);
   }
 
-  @Post('alternarStatus')
+  @Put()
   @ApiOperation({ summary: 'Alterna o status ativo/inativo de uma funcionalidade' })
   @ApiBody({ type: AlternarStatusFuncionalidadeDto, examples: {
     exemplo: {

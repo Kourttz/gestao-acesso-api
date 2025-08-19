@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Put, Delete, Patch } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { CriarSistemaDto, AtualizarSistemaDto, DeletarSistemaDto, AlternarStatusSistemaDto } from './sistemas.dto';
 import { SistemasService } from './sistemas.service';
@@ -27,7 +27,7 @@ export class SistemasController {
     return this.sistemasService.criarSistema(dados);
   }
 
-  @Post('atualizar')
+  @Patch()
   @ApiOperation({ summary: 'Atualiza um sistema existente' })
   @ApiBody({ type: AtualizarSistemaDto, examples: {
     exemplo: {
@@ -39,7 +39,7 @@ export class SistemasController {
     return this.sistemasService.atualizarSistema(dados);
   }
 
-  @Post('deletar')
+  @Delete()
   @ApiOperation({ summary: 'Deleta um sistema existente' })
   @ApiBody({ type: DeletarSistemaDto, examples: {
     exemplo: {
@@ -51,7 +51,7 @@ export class SistemasController {
     return this.sistemasService.deletarSistema(dados.coSistema);
   }
 
-  @Post('alternarStatus')
+  @Put()
   @ApiOperation({ summary: 'Alterna o status ativo/inativo de um sistema' })
   @ApiBody({ type: AlternarStatusSistemaDto, examples: {
     exemplo: {

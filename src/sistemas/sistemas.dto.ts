@@ -1,10 +1,6 @@
 import { IsNumber, IsString, IsBoolean, Min } from 'class-validator';
 
 export class CriarSistemaDto {
-  @IsNumber()
-  @Min(1)
-  coSistema: number;
-
   @IsString()
   noSistema: string;
 
