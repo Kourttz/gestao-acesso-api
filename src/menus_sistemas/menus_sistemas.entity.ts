@@ -17,5 +17,5 @@ export class MenusSistemas {
 
   @ManyToOne(() => Sistemas, (sistema) => sistema.coSistema)
   @JoinColumn({ name: 'co_sistema' })
-  coSistemas: Sistemas;
+  coSistema: Sistemas;
 }

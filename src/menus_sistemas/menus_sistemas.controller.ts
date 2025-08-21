@@ -2,6 +2,7 @@ import { Controller,Get,Post,Body,Param,ParseIntPipe } from '@nestjs/common';
 import { ApiTags,ApiOperation,ApiParam,ApiBody,ApiResponse } from '@nestjs/swagger';
 import { MenusSistemasService } from './menus_sistemas.service';
 import { MenusSistemas } from './menus_sistemas.entity';
+import { Sistemas } from 'src/sistemas/sistemas.entity';
 
 @ApiTags('Menus Sistemas')
 @Controller('MS')
@@ -29,42 +30,26 @@ export class MenusSistemasController {
     );
   }
 
-  @Post(':coMenu')
-  @ApiOperation({ summary: 'Atualizar ou cadastrar funcionalidades para um perfil'})
-  @ApiParam({name: 'coMenu',type: Number,description: 'Código do perfil'})
+  @Post()
+  @ApiOperation({ summary: 'Atualizar ou cadastrar vínculos de menus e sistemas'})
   @ApiBody({
-    description:
-      'Objeto contendo funcionalidades e ações, ex: { "co_funcionalidade": {  "1" (acoes): [1 (Cadastrar), 2 (Visualizar), 4 (Deletar)], "2" (funcionalidades): [2 (Visualizar), 5 (Inativar)] } }',
     schema: {
       type: 'object',
-      properties: {
-        co_funcionalidade: {
-          type: 'object',
-          additionalProperties: {
-            type: 'array',
-            items: { type: 'number' },
-          },
-          example: {
-            "1": [1, 2, 4],
-            "2": [2, 5],
-          },
-        },
+      additionalProperties: {
+        type: 'array',
+        items: { type: 'number' },
       },
-      required: ['co_funcionalidade'],
+      example: {
+        "1": [1, 2, 4],
+        "2": [2, 5],
+      },
     },
   })
-  @ApiResponse({
-    status: 201,
-    description: 'Perfil atualizado com sucesso!',
-  })
   async atualizarOuCadastrar(
-    @Param('coMenu', ParseIntPipe) coMenu: number,
-    @Body('co_funcionalidade') funcionalidades: Record<number, number[]>,
+    @Body() sistemas: Record<number, number[]>,
   ) {
-    await this.MenusSistemasService.atualizarOuCadastrar(
-      coMenu,
-      funcionalidades,
-    );
-    return { message: 'Perfil atualizado com sucesso!' };
+    await this.MenusSistemasService.atualizarOuCadastrar(sistemas);
+    return { message: 'Menus atualizados com sucesso!' };
   }
+
 }

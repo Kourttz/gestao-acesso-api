@@ -1,50 +1,79 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Menus } from './menus.entity';
 
 @Injectable()
 export class MenusService {
-    constructor(
-      @InjectRepository(Menus)
-      private readonly acoesRepository: Repository<Menus>,
-    ) {}
+  constructor(
+    @InjectRepository(Menus)
+    private readonly menusRepository: Repository<Menus>,
+  ) {}
 
-    async listarMenus(): Promise<Menus[]> {
-      return this.acoesRepository.find();
+  async listarMenus(): Promise<Menus[]> {
+    return this.menusRepository.find();
+  }
+
+  async criarMenu(dados: Partial<Menus>): Promise<Menus> {
+    const menu = this.menusRepository.create(dados);
+    return await this.menusRepository.save(menu);
+  }
+
+  async atualizarMenu(dados: Partial<Menus>): Promise<Menus> {
+    if (!dados.coMenu) {
+      throw new HttpException(
+        'ID (coMenu) não informado para atualização',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    async criarMenu(dados: Partial<Menus>): Promise<Menus> {
-      const menu = this.acoesRepository.create(dados);
-      return await this.acoesRepository.save(menu);
+    const resultado = await this.menusRepository.update(dados.coMenu, dados);
+
+    if (resultado.affected === 0) {
+      throw new HttpException(
+        'Menu não encontrado para atualização',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    async atualizarMenu(dados: Partial<Menus>): Promise<Menus> {
-        if (!dados.coMenu) {
-            throw new Error('ID (coMenu) não informado');
-        }
-        await this.acoesRepository.update(dados.coMenu, dados);
-        const menu = await this.acoesRepository.findOneBy({ coMenu: dados.coMenu });
-        if (!menu) {
-            throw new Error('Menu não encontrado após atualização');
-        }
-        return menu;
+    const menuAtualizado = await this.menusRepository.findOneBy({
+      coMenu: dados.coMenu,
+    });
+
+    if (!menuAtualizado) {
+      throw new HttpException(
+        'Erro ao recuperar menu após atualização',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
-    async deletarMenu(coMenu: number): Promise<void> {
-        const resultado = await this.acoesRepository.delete(coMenu);
-        if (resultado.affected === 0) {
-            throw new Error('Menu não encontrado para exclusão');
-        }
+    return menuAtualizado;
+  }
+
+  async deletarMenu(coMenu: number): Promise<void> {
+    const resultado = await this.menusRepository.delete(coMenu);
+
+    if (resultado.affected === 0) {
+      throw new HttpException(
+        'Menu não encontrado para exclusão',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  async alternarStatus(coMenu: number): Promise<Menus> {
+    const menu = await this.menusRepository.findOneBy({ coMenu });
+
+    if (!menu) {
+      throw new HttpException(
+        'Menu não encontrado para alternar status',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    async alternarStatus(coMenu: number): Promise<Menus> {
-      const menu = await this.acoesRepository.findOneBy({ coMenu });
-      if (!menu) {
-        throw new Error('Menu não encontrado');
-      }
-      menu.icSituacaoAtivo = !menu.icSituacaoAtivo;
-      await this.acoesRepository.save(menu);
-      return menu;
-    }
+    menu.icSituacaoAtivo = !menu.icSituacaoAtivo;
+    await this.menusRepository.save(menu);
+
+    return menu;
+  }
 }

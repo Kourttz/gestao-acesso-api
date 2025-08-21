@@ -35,7 +35,7 @@ export class MenusSistemasService {
         const novosMS: MenusSistemas[] = sistemas.map((coSistema) =>
           this.MenusSistemasRepository.create({
             coMenu: { coMenu: menuId } as Menus,               
-            coSistemas: { coSistema: Number(coSistema) } as Sistemas, 
+            coSistema: { coSistema: Number(coSistema) } as Sistemas, 
           })
         );
   

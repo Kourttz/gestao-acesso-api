@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import {TypeOrmModule} from '@nestjs/typeorm';
-import {ConfigModule} from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { PerfisModule } from './perfis/perfis.module';
 import { SistemasModule } from './sistemas/sistemas.module';
 import { AcoesModule } from './acoes/acoes.module';
