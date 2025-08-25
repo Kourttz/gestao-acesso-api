@@ -45,7 +45,7 @@ export class MenusController {
     examples: {
       exemplo: {
         summary: 'Exemplo de criação',
-        value: { coMenu: 1, noMenu: 'Menu de teste', icSituacaoAtivo: true },
+        value: {  noMenu: 'Menu de teste', icSituacaoAtivo: true },
       },
     },
   })
