@@ -6,7 +6,7 @@ export default function initSwagger(app: INestApplication) {
     const config = new DocumentBuilder() 
         .setTitle( 'API GESTÃO DE ACESSOS') 
         .setDescription('API responsável por gerenciar os acessos dos usuários aos sistemas') 
-        .setVersion("1.0") .build();
+        .setVersion("2.0") .build();
         
     const document = SwaggerModule. createDocument(app, config);
 
