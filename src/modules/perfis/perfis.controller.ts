@@ -65,7 +65,7 @@ export class PerfisController {
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: { noPerfil: 'Perfil atualizada'},
+        value: { coPerfil: 1, noPerfil: 'Perfil atualizada'},
       },
     },
   })

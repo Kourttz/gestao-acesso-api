@@ -65,7 +65,7 @@ export class AcoesController {
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: { noAcao: 'Ação atualizada' },
+        value: { coAcao:1, noAcao: 'Ação atualizada' },
       },
     },
   })

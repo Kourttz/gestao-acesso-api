@@ -26,7 +26,7 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
     await queryRunner.createTable(new Table({
       name: "tb_menu_sistema",
       columns: [
-        { name: "co_sistemas_menu", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
+        { name: "co_menu_sistema", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
         { name: "co_menu", type: "int" },
         { name: "co_sistema", type: "int" },
       ],
@@ -81,7 +81,7 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
     await queryRunner.createTable(new Table({
       name: "tb_perfil_funcionalidade_acao",
       columns: [
-        { name: "co_perfil_funcionalidade_acoes", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
+        { name: "co_perfil_funcionalidade_acao", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
         { name: "co_perfil", type: "int" },
         { name: "co_funcionalidade", type: "int" },
         { name: "co_acao", type: "int" },
@@ -144,3 +144,4 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
     await queryRunner.dropTable("tb_menus");
   }
 }
+

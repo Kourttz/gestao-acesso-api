@@ -11,6 +11,13 @@ export class UsuariosService {
   ) {}
 
   async listarUsuarios(): Promise<Usuarios[]> {
-    return this.UsuariosRepository.find();
+    return this.UsuariosRepository.find({
+      relations: ['coPerfil'],
+    });
   }
+
+  async atualizarPerfilUsuario( coUsuario: number, coPerfil: number ): Promise<void> {
+    await this.UsuariosRepository.update(coUsuario, { coPerfil: { coPerfil }});
+  }
+
 }

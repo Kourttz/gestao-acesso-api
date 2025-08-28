@@ -33,32 +33,34 @@ gestao-acesso-api/
 │ │ │ ├── http-exception.filter.ts # Filtro de exceções HTTP
 │ │ └── response.dto.ts # DTO para padronizar respostas
 │ ├── migrations/
-│ │ └── 1724690000000-CreateInitialSchema.ts # Migração para criação inicial do esquema do banco de dados
+│ │ └── 1724690000000-CreateInitialSchema.ts # Migração para criação inicial do esquema
 │ ├── modules/
-│ │ ├── acoes/ # Gerenciamento de Ações
-│ │ ├── funcionalidades/ # Gerenciamento de Funcionalidades dos Sistemas
-│ │ ├── menu_sistema/ # Gerenciamento de Menus do Sistema
-│ │ ├── menus/ # Gerenciamento de Menus
-│ │ ├── perfil_funcionalidade_acao/ # Gerenciamento de Permissões e Funcionalidades por Perfil
-│ │ ├── perfis/ # Gerenciamento de Perfis de acesso
-│ │ ├── sistemas/ # Gerenciamento de Sistemas
-│ │ └── usuarios/ # Gerenciamento de Usuários
-│ ├── app.module.ts # Módulo raiz da aplicação
-│ ├── main.ts # Ponto de entrada da aplicação
-│ └── swagger.ts # Configuração do Swagger
-├── .env # Variáveis de ambiente
-├── .gitignore # Arquivos e pastas a serem ignorados pelo Git
-├── .prettierrc # Configurações do Prettier (formatador de código)
-├── data-source.ts # Configuração do TypeORM para conexão com o banco de dados
-├── docker-compose.yml # Arquivo para containerização do projeto e do banco de dados
-├── eslint.config.mjs # Configuração do ESLint (linter)
-├── nest-cli.json # Configurações da CLI do NestJS
-├── package-lock.json # Dependências instaladas
-├── package.json # Dependências do projeto e scripts
-├── README.md # Documentação do projeto
-├── tsconfig.build.json # Configurações do TypeScript para o build
-└── tsconfig.json # Configurações gerais do TypeScript
-```
+│ │ ├── acoes/                # Gerenciamento de Ações
+│ │ ├── funcionalidades/      # Funcionalidades dos Sistemas
+│ │ ├── menu_sistema/         # Menus do Sistema
+│ │ ├── menus/                # Gerenciamento de Menus
+│ │ ├── perfil_funcionalidade_acao/ # Permissões por Perfil
+│ │ ├── perfis/               # Perfis de acesso
+│ │ ├── sistemas/             # Sistemas
+│ │ └── usuarios/             # Usuários
+│ ├── seeds/
+│ │ ├── acoes.seed.ts         # Seed de ações
+│ │ ├── funcionalidades.seed.ts # Seed de funcionalidades
+│ │ ├── menus.seed.ts         # Seed de menus
+│ │ ├── perfis.seed.ts        # Seed de perfis
+│ │ ├── sistemas.seed.ts      # Seed de sistemas
+│ │ ├── usuarios.seed.ts      # Seed de usuários
+│ │ └── seed.ts               # Script para rodar todos os seeds
+│ ├── app.module.ts           # Módulo raiz
+│ ├── main.ts                 # Ponto de entrada
+│ └── swagger.ts              # Configuração Swagger
+├── docker-compose.yml         # Orquestração dos containers
+├── Dockerfile                 # Configuração do container da API
+├── data-source.ts             # Configuração do TypeORM
+├── .env                       # Variáveis de ambiente
+├── package.json               # Dependências e scripts
+└── README.md
+
 
 💡 Cada módulo possui **controller**, **service**, **entity** e **DTOs**, seguindo a arquitetura limpa do NestJS.
 

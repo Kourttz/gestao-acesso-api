@@ -65,7 +65,7 @@ export class SistemasController {
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: { noSistema: 'Sistema atualizado'},
+        value: { coSistema: 1, noSistema: 'Sistema atualizado'},
       },
     },
   })

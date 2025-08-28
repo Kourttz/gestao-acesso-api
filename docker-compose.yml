@@ -1,15 +1,39 @@
+version: '3.9'  # versão do compose
 
-version: '3.8'
 services:
-  postgres:
-    image: postgres:15
-    container_name: meu_postgres
+  db:
+    image: postgres:15-alpine
+    container_name: gestao-postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: DB_Gestao_de_Acessos
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
-      - ./dados_postgres:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: gestao-api
+    restart: always
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: DB_Gestao_de_Acessos
+      DB_HOST: db
+      DB_PORT: 5432
+    ports:
+      - '3000:3000'
+    working_dir: /app
+    volumes:
+      - .:/app        
+    command: npm run start
+
+volumes:
+  pgdata:

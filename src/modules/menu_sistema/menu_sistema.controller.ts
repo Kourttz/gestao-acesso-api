@@ -22,6 +22,7 @@ export class MenuSistemaController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'Lista todos os menus e seus sistemas filhos' })
   async listar(): Promise<{ statusCode: number; message: string; data: MenuSistemaResponseDto[] }> {
     const data = await this.menuSistemaService.listarMS();
     return {

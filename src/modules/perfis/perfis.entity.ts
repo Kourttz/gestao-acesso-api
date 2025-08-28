@@ -16,7 +16,7 @@ export class Perfis {
   @Column({ name: 'ic_situacao_ativo', type: 'bit', default: true })
   icSituacaoAtivo: boolean;
 
-  @OneToMany(() => Usuarios, (usuario) => usuario.perfil)
+  @OneToMany(() => Usuarios, (usuario) => usuario.coPerfil)
   usuarios: Usuarios[];
 
   @OneToMany(() => PerfilFuncionalidadeAcao, (pfa) => pfa.coPerfil)

@@ -51,7 +51,8 @@ export class PerfilFuncionalidadeAcaoService {
       }
     }
 
-        async getPermissoesAgrupadasPorPerfil(coPerfil: number): Promise<PerfilPermissao[]> {
+  async getPermissoesAgrupadasPorPerfil(coPerfil: number): Promise<PerfilPermissao[]> {
+    
     if (!coPerfil) throw new Error('ID do perfil não informado');
 
     const registros = await this.acoesRepository

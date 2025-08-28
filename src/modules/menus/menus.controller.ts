@@ -65,7 +65,7 @@ export class MenusController {
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: { noMenu: 'Menu atualizado' },
+        value: { coMenu:1,  noMenu: 'Menu atualizado' },
       },
     },
   })

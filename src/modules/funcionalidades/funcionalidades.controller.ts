@@ -65,7 +65,7 @@ export class FuncionalidadesController {
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: {  noFuncionalidade: 'Funcionalidade atualizada', deFuncionalidade: 'Descrição dessa funcionalidade de teste atualizada', coSistema: 1},
+        value: {  coFuncionalidade:1, noFuncionalidade: 'Funcionalidade atualizada', deFuncionalidade: 'Descrição dessa funcionalidade de teste atualizada', coSistema: 1},
       },
     },
   })
