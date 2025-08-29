@@ -14,6 +14,7 @@ export class MenuSistemaService {
   ) {}
 
   async listarMS(): Promise<MenuSistemaResponseDto[]> {
+    
     const menusSistemas = await this.MenuSistemaRepository.find({
       relations: ['coMenu', 'coSistema'],
     });

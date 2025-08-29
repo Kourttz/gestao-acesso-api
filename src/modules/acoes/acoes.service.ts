@@ -15,11 +15,27 @@ export class AcoesService {
   }
 
   async criarAcao(dados: Partial<Acoes>): Promise<Acoes> {
+
+    if (dados.coAcao) {
+      throw new HttpException(
+        'Não é permitido informar um ID (coAcao) para a nova ação',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const acao = this.acoesRepository.create(dados);
     return await this.acoesRepository.save(acao);
   }
 
   async atualizarAcao(dados: Partial<Acoes>): Promise<Acoes> {
+
+    if (dados.icSituacaoAtivo !== undefined) {
+      throw new HttpException(
+        'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (!dados.coAcao) {
       throw new HttpException(
         'ID (coAcao) não informado para atualização',

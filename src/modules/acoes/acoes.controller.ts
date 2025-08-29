@@ -8,6 +8,7 @@ import {
   Put,
   UseFilters,
   HttpStatus,
+  Req
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import {
@@ -20,6 +21,8 @@ import { AcoesService } from './acoes.service';
 import { Acoes } from './acoes.entity';
 import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
+import { Request } from 'express';
 
 @ApiTags('Acoes')
 @UseFilters(HttpExceptionFilter)
@@ -29,12 +32,14 @@ export class AcoesController {
 
   @Get()
   @ApiOperation({ summary: 'Lista todas as Ações' })
-  async listar(): Promise<ResponseDto<Acoes[]>> {
+  async listar(@Req() request: Request): Promise<ResponseDto<Acoes[]>> {
     const acoes = await this.acoesService.listarAcoes();
     return {
       statusCode: HttpStatus.OK,
       message: 'Ações listadas com sucesso',
-      data: acoes,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: acoes
     };
   }
 
@@ -49,12 +54,14 @@ export class AcoesController {
       },
     },
   })
-  async criar(@Body() dados: CriarAcaoDto): Promise<ResponseDto<Acoes>> {
+  async criar(@Body() dados: CriarAcaoDto,@Req() request:Request): Promise<ResponseDto<Acoes>> {
     const acao = await this.acoesService.criarAcao(dados);
     return {
       statusCode: HttpStatus.CREATED,
-      message: 'Acao criada com sucesso',
-      data: acao,
+      message: 'Ação criada com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: acao
     };
   }
 
@@ -69,12 +76,14 @@ export class AcoesController {
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarAcaoDto): Promise<ResponseDto<Acoes>> {
+  async atualizar(@Body() dados: AtualizarAcaoDto,@Req() request:Request): Promise<ResponseDto<Acoes>> {
     const acaoAtualizada = await this.acoesService.atualizarAcao(dados);
     return {
       statusCode: HttpStatus.OK,
       message: 'Ação atualizada com sucesso',
-      data: acaoAtualizada,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: acaoAtualizada
     };
   }
 
@@ -89,11 +98,14 @@ export class AcoesController {
       },
     },
   })
-  async deletar(@Body() dados: DeletarAcaoDto): Promise<ResponseDto<null>> {
+  async deletar(@Body() dados: DeletarAcaoDto, @Req() request:Request): Promise<ResponseDto<null>> {
     await this.acoesService.deletarAcao(dados.coAcao);
     return {
       statusCode: HttpStatus.OK,
       message: 'Ação deletada com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: null
     };
   }
 
@@ -108,12 +120,14 @@ export class AcoesController {
       },
     },
   })
-  async alternarStatus(@Body() dados: AlternarStatusDto): Promise<ResponseDto<Acoes>> {
+  async alternarStatus(@Body() dados: AlternarStatusDto, @Req() request:Request): Promise<ResponseDto<Acoes>> {
     const acaoAtualizada = await this.acoesService.alternarStatus(dados.coAcao);
     return {
       statusCode: HttpStatus.OK,
       message: 'Status da ação alternado com sucesso',
-      data: acaoAtualizada,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: acaoAtualizada
     };
   }
 }

@@ -15,11 +15,27 @@ export class MenusService {
   }
 
   async criarMenu(dados: Partial<Menus>): Promise<Menus> {
+
+    if (dados.coMenu) {
+      throw new HttpException(
+        'Não é permitido informar um ID (coMenu) para o novo menu',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const menu = this.menusRepository.create(dados);
     return await this.menusRepository.save(menu);
   }
 
   async atualizarMenu(dados: Partial<Menus>): Promise<Menus> {
+
+    if (dados.icSituacaoAtivo !== undefined) {
+      throw new HttpException(
+        'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (!dados.coMenu) {
       throw new HttpException(
         'ID (coMenu) não informado para atualização',

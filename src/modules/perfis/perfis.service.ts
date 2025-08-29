@@ -15,11 +15,27 @@ export class PerfisService {
   }
 
   async criarPerfil(dados: Partial<Perfis>): Promise<Perfis> {
+
+    if (dados.coPerfil) {
+      throw new HttpException(
+        'Não é permitido informar um ID (coPerfil) para o novo perfil',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const perfil = this.PerfisRepository.create(dados);
     return await this.PerfisRepository.save(perfil);
   }
 
   async atualizarPerfil(dados: Partial<Perfis>): Promise<Perfis> {
+
+    if (dados.icSituacaoAtivo !== undefined) {
+      throw new HttpException(
+        'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (!dados.coPerfil) {
       throw new HttpException(
         'ID (coPerfil) não informado para atualização',

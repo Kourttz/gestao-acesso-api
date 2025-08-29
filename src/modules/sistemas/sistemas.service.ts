@@ -15,11 +15,27 @@ export class SistemasService {
   }
 
   async criarSistema(dados: Partial<Sistemas>): Promise<Sistemas> {
+
+    if (dados.coSistema) {
+      throw new HttpException(
+        'Não é permitido informar um ID (coSistema) para o novo sistema',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const sistema = this.SistemasRepository.create(dados);
     return await this.SistemasRepository.save(sistema);
   }
 
   async atualizarSistema(dados: Partial<Sistemas>): Promise<Sistemas> {
+
+    if (dados.icSituacaoAtivo !== undefined) {
+      throw new HttpException(
+        'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (!dados.coSistema) {
       throw new HttpException(
         'ID (coSistema) não informado para atualização',

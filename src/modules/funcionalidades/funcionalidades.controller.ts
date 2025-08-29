@@ -8,6 +8,7 @@ import {
   Put,
   UseFilters,
   HttpStatus,
+  Req
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import {
@@ -20,6 +21,10 @@ import { FuncionalidadesService } from './funcionalidades.service';
 import { Funcionalidades } from './funcionalidades.entity';
 import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
+import { Request } from 'express';
+import { request } from 'http';
+
 
 @ApiTags('Funcionalidades')
 @UseFilters(HttpExceptionFilter)
@@ -29,12 +34,14 @@ export class FuncionalidadesController {
 
   @Get()
   @ApiOperation({ summary: 'Lista todas os Funcionalidades' })
-  async listar(): Promise<ResponseDto<Funcionalidades[]>> {
+  async listar(@Req() request:Request): Promise<ResponseDto<Funcionalidades[]>> {
     const funcionalidades = await this.funcionalidadesService.listarFuncionalidades();
     return {
       statusCode: HttpStatus.OK,
       message: 'Funcionalidades listados com sucesso',
-      data: funcionalidades,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: funcionalidades
     };
   }
 
@@ -49,11 +56,13 @@ export class FuncionalidadesController {
       },
     },
   })
-  async criar(@Body() dados: CriarFuncionalidadeDto): Promise<ResponseDto<Funcionalidades>> {
+  async criar(@Body() dados: CriarFuncionalidadeDto, @Req() request:Request): Promise<ResponseDto<Funcionalidades>> {
     const funcionalidade = await this.funcionalidadesService.criarFuncionalidade(dados);
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Funcionalidade criada com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
       data: funcionalidade,
     };
   }
@@ -69,11 +78,13 @@ export class FuncionalidadesController {
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarFuncionalidadeDto): Promise<ResponseDto<Funcionalidades>> {
+  async atualizar(@Body() dados: AtualizarFuncionalidadeDto, @Req() request: Request): Promise<ResponseDto<Funcionalidades>> {
     const funcionalidadeAtualizado = await this.funcionalidadesService.atualizarFuncionalidade(dados);
     return {
       statusCode: HttpStatus.OK,
       message: 'Funcionalidade atualizada com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
       data: funcionalidadeAtualizado,
     };
   }
@@ -89,11 +100,14 @@ export class FuncionalidadesController {
       },
     },
   })
-  async deletar(@Body() dados: DeletarFuncionalidadeDto): Promise<ResponseDto<null>> {
+  async deletar(@Body() dados: DeletarFuncionalidadeDto, @Req() request: Request): Promise<ResponseDto<null>> {
     await this.funcionalidadesService.deletarFuncionalidade(dados.coFuncionalidade);
     return {
       statusCode: HttpStatus.OK,
       message: 'Funcionalidade deletada com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: null
     };
   }
 
@@ -108,12 +122,14 @@ export class FuncionalidadesController {
       },
     },
   })
-  async alternarStatus(@Body() dados: AlternarStatusFuncionalidadeDto): Promise<ResponseDto<Funcionalidades>> {
+  async alternarStatus(@Body() dados: AlternarStatusFuncionalidadeDto, @Req() request: Request): Promise<ResponseDto<Funcionalidades>> {
     const funcionalidadeAtualizado = await this.funcionalidadesService.alternarStatus(dados.coFuncionalidade);
     return {
       statusCode: HttpStatus.OK,
       message: 'Status da funcionalidade alternado com sucesso',
-      data: funcionalidadeAtualizado,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: funcionalidadeAtualizado
     };
   }
 }

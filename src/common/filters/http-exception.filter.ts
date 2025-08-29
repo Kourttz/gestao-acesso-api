@@ -6,6 +6,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { getGMT3Timestamp } from '../utils/timestamp.util';
+
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -32,7 +34,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     response.status(status).json({
       statusCode: status,
-      timestamp: new Date().toISOString(),
+      timestamp: getGMT3Timestamp(),
       path: request.url,
       message,
     });

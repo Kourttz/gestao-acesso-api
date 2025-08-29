@@ -8,6 +8,7 @@ import {
   Put,
   UseFilters,
   HttpStatus,
+  Req
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import {
@@ -20,6 +21,8 @@ import { SistemasService } from './sistemas.service';
 import { Sistemas } from './sistemas.entity';
 import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
+import { request, Request } from 'express';
 
 @ApiTags('Sistemas')
 @UseFilters(HttpExceptionFilter)
@@ -29,12 +32,14 @@ export class SistemasController {
 
   @Get()
   @ApiOperation({ summary: 'Lista todos os Sistemas' })
-  async listar(): Promise<ResponseDto<Sistemas[]>> {
+  async listar(@Req() request:Request): Promise<ResponseDto<Sistemas[]>> {
     const sistemas = await this.sistemasService.listarSistemas();
     return {
       statusCode: HttpStatus.OK,
       message: 'Sistemas listados com sucesso',
-      data: sistemas,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: sistemas
     };
   }
 
@@ -49,12 +54,14 @@ export class SistemasController {
       },
     },
   })
-  async criar(@Body() dados: CriarSistemaDto): Promise<ResponseDto<Sistemas>> {
+  async criar(@Body() dados: CriarSistemaDto, @Req() request:Request): Promise<ResponseDto<Sistemas>> {
     const sistema = await this.sistemasService.criarSistema(dados);
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Sistema criado com sucesso',
-      data: sistema,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: sistema
     };
   }
 
@@ -69,12 +76,14 @@ export class SistemasController {
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarSistemaDto): Promise<ResponseDto<Sistemas>> {
+  async atualizar(@Body() dados: AtualizarSistemaDto, @Req() request: Request): Promise<ResponseDto<Sistemas>> {
     const sistemaAtualizado = await this.sistemasService.atualizarSistema(dados);
     return {
       statusCode: HttpStatus.OK,
       message: 'Sistema atualizado com sucesso',
-      data: sistemaAtualizado,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: sistemaAtualizado
     };
   }
 
@@ -89,11 +98,14 @@ export class SistemasController {
       },
     },
   })
-  async deletar(@Body() dados: DeletarSistemaDto): Promise<ResponseDto<null>> {
+  async deletar(@Body() dados: DeletarSistemaDto, @Req() request:Request): Promise<ResponseDto<null>> {
     await this.sistemasService.deletarSistema(dados.coSistema);
     return {
       statusCode: HttpStatus.OK,
       message: 'Sistema deletado com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: null,
     };
   }
 
@@ -108,12 +120,14 @@ export class SistemasController {
       },
     },
   })
-  async alternarStatus(@Body() dados: AlternarStatusSistemaDto): Promise<ResponseDto<Sistemas>> {
+  async alternarStatus(@Body() dados: AlternarStatusSistemaDto, @Req() request:Request): Promise<ResponseDto<Sistemas>> {
     const sistemaAtualizado = await this.sistemasService.alternarStatus(dados.coSistema);
     return {
       statusCode: HttpStatus.OK,
       message: 'Status do sistema alternado com sucesso',
-      data: sistemaAtualizado,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: sistemaAtualizado
     };
   }
 }

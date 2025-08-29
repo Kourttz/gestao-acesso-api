@@ -8,6 +8,7 @@ import {
   Put,
   UseFilters,
   HttpStatus,
+  Req
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import {
@@ -20,6 +21,9 @@ import { MenusService } from './menus.service';
 import { Menus } from './menus.entity';
 import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
+import { Request } from 'express';
+import { request } from 'http';
 
 @ApiTags('Menus')
 @UseFilters(HttpExceptionFilter)
@@ -29,12 +33,14 @@ export class MenusController {
 
   @Get()
   @ApiOperation({ summary: 'Lista todas os Menus' })
-  async listar(): Promise<ResponseDto<Menus[]>> {
+  async listar(@Req() request:Request): Promise<ResponseDto<Menus[]>> {
     const menus = await this.menusService.listarMenus();
     return {
       statusCode: HttpStatus.OK,
       message: 'Menus listados com sucesso',
-      data: menus,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: menus
     };
   }
 
@@ -49,12 +55,14 @@ export class MenusController {
       },
     },
   })
-  async criar(@Body() dados: CriarMenuDto): Promise<ResponseDto<Menus>> {
+  async criar(@Body() dados: CriarMenuDto, @Req() request: Request): Promise<ResponseDto<Menus>> {
     const menu = await this.menusService.criarMenu(dados);
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Menu criado com sucesso',
-      data: menu,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: menu
     };
   }
 
@@ -69,12 +77,14 @@ export class MenusController {
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarMenuDto): Promise<ResponseDto<Menus>> {
+  async atualizar(@Body() dados: AtualizarMenuDto, @Req() request:Request): Promise<ResponseDto<Menus>> {
     const menuAtualizado = await this.menusService.atualizarMenu(dados);
     return {
       statusCode: HttpStatus.OK,
       message: 'Menu atualizado com sucesso',
-      data: menuAtualizado,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: menuAtualizado
     };
   }
 
@@ -89,11 +99,14 @@ export class MenusController {
       },
     },
   })
-  async deletar(@Body() dados: DeletarMenuDto): Promise<ResponseDto<null>> {
+  async deletar(@Body() dados: DeletarMenuDto, @Req() request:Request): Promise<ResponseDto<null>> {
     await this.menusService.deletarMenu(dados.coMenu);
     return {
       statusCode: HttpStatus.OK,
       message: 'Menu deletado com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: null
     };
   }
 
@@ -108,12 +121,14 @@ export class MenusController {
       },
     },
   })
-  async alternarStatus(@Body() dados: AlternarStatusDto): Promise<ResponseDto<Menus>> {
+  async alternarStatus(@Body() dados: AlternarStatusDto, @Req() request:Request): Promise<ResponseDto<Menus>> {
     const menuAtualizado = await this.menusService.alternarStatus(dados.coMenu);
     return {
       statusCode: HttpStatus.OK,
       message: 'Status do menu alternado com sucesso',
-      data: menuAtualizado,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: menuAtualizado
     };
   }
 }

@@ -15,11 +15,27 @@ export class FuncionalidadesService {
   }
 
   async criarFuncionalidade(dados: Partial<Funcionalidades>): Promise<Funcionalidades> {
+
+    if (dados.coFuncionalidade) {
+      throw new HttpException(
+        'Não é permitido informar um ID (coFuncionalidades) para a nova funcionalidade',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const funcionalidade = this.FuncionalidadesRepository.create(dados);
     return await this.FuncionalidadesRepository.save(funcionalidade);
   }
 
   async atualizarFuncionalidade(dados: Partial<Funcionalidades>): Promise<Funcionalidades> {
+
+    if (dados.icSituacaoAtivo !== undefined) {
+      throw new HttpException(
+        'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (!dados.coFuncionalidade) {
       throw new HttpException(
         'ID (coFuncionalidades) não informado para atualização',

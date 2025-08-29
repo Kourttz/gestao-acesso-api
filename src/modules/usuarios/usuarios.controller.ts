@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  Req
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { UsuariosService } from './usuarios.service';
@@ -14,6 +15,8 @@ import { Usuarios } from './usuarios.entity';
 import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
 import { AtualizarPerfilUsuarioDto } from './usuarios.dto';
+import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
+import { Request } from 'express';
 
 @ApiTags('Usuarios')
 @UseFilters(HttpExceptionFilter)
@@ -23,12 +26,14 @@ export class UsuariosController {
 
   @Get()
   @ApiOperation({ summary: 'Lista todos os Usuários' })
-  async listar(): Promise<ResponseDto<Usuarios[]>> {
+  async listar(@Req() request:Request): Promise<ResponseDto<Usuarios[]>> {
     const usuarios = await this.usuariosService.listarUsuarios();
     return {
       statusCode: HttpStatus.OK,
       message: 'Usuários listados com sucesso',
-      data: usuarios,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: usuarios
     };
   }
 
@@ -46,6 +51,7 @@ export class UsuariosController {
   async atualizarPerfilUsuario(
     @Param('coUsuario', ParseIntPipe) coUsuario: number,
     @Body() dto: AtualizarPerfilUsuarioDto,
+    @Req() request:Request
   ): Promise<ResponseDto<null>> {
     await this.usuariosService.atualizarPerfilUsuario(
       coUsuario,
@@ -53,8 +59,10 @@ export class UsuariosController {
     );
     return {
       statusCode: HttpStatus.OK,
-      message: 'Perfil do usuário foi atualizado com sucesso!',
-      data: null,
+      message: 'Perfil do usuário foi atualizado com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: null
     };
   }
 

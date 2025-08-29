@@ -8,6 +8,7 @@ import {
   Put,
   UseFilters,
   HttpStatus,
+  Req
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import {
@@ -20,6 +21,8 @@ import { PerfisService } from './perfis.service';
 import { Perfis } from './perfis.entity';
 import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
+import { Request } from 'express';
 
 @ApiTags('Perfis')
 @UseFilters(HttpExceptionFilter)
@@ -29,12 +32,14 @@ export class PerfisController {
 
   @Get()
   @ApiOperation({ summary: 'Lista todos os Perfis' })
-  async listar(): Promise<ResponseDto<Perfis[]>> {
+  async listar(@Req() request:Request): Promise<ResponseDto<Perfis[]>> {
     const perfis = await this.perfisService.listarPerfis();
     return {
       statusCode: HttpStatus.OK,
       message: 'Perfis listados com sucesso',
-      data: perfis,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: perfis
     };
   }
 
@@ -49,12 +54,14 @@ export class PerfisController {
       },
     },
   })
-  async criar(@Body() dados: CriarPerfilDto): Promise<ResponseDto<Perfis>> {
+  async criar(@Body() dados: CriarPerfilDto, @Req() request:Request): Promise<ResponseDto<Perfis>> {
     const perfil = await this.perfisService.criarPerfil(dados);
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Perfil criado com sucesso',
-      data: perfil,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: perfil
     };
   }
 
@@ -69,12 +76,14 @@ export class PerfisController {
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarPerfilDto): Promise<ResponseDto<Perfis>> {
+  async atualizar(@Body() dados: AtualizarPerfilDto, @Req() request:Request): Promise<ResponseDto<Perfis>> {
     const perfilAtualizado = await this.perfisService.atualizarPerfil(dados);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Perfil atualizada com sucesso',
-      data: perfilAtualizado,
+      message: 'Perfil atualizado com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: perfilAtualizado
     };
   }
 
@@ -89,11 +98,14 @@ export class PerfisController {
       },
     },
   })
-  async deletar(@Body() dados: DeletarPerfilDto): Promise<ResponseDto<null>> {
+  async deletar(@Body() dados: DeletarPerfilDto, @Req() request:Request): Promise<ResponseDto<null>> {
     await this.perfisService.deletarPerfil(dados.coPerfil);
     return {
       statusCode: HttpStatus.OK,
       message: 'Perfil deletado com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: null
     };
   }
 
@@ -108,12 +120,14 @@ export class PerfisController {
       },
     },
   })
-  async alternarStatus(@Body() dados: AlternarStatusPerfilDto): Promise<ResponseDto<Perfis>> {
+  async alternarStatus(@Body() dados: AlternarStatusPerfilDto, @Req() request:Request): Promise<ResponseDto<Perfis>> {
     const perfilAtualizado = await this.perfisService.alternarStatus(dados.coPerfil);
     return {
       statusCode: HttpStatus.OK,
       message: 'Status da perfil alternado com sucesso',
-      data: perfilAtualizado,
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: perfilAtualizado
     };
   }
 }
