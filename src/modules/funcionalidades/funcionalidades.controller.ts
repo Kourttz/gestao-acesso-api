@@ -8,14 +8,13 @@ import {
   Put,
   UseFilters,
   HttpStatus,
-  Req
+  Req,
+  Param,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiParam } from '@nestjs/swagger';
 import {
   CriarFuncionalidadeDto,
   AtualizarFuncionalidadeDto,
-  DeletarFuncionalidadeDto,
-  AlternarStatusFuncionalidadeDto,
 } from './funcionalidades.dto';
 import { FuncionalidadesService } from './funcionalidades.service';
 import { Funcionalidades } from './funcionalidades.entity';
@@ -23,41 +22,53 @@ import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
 import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
 import { Request } from 'express';
-import { request } from 'http';
-
 
 @ApiTags('Funcionalidades')
 @UseFilters(HttpExceptionFilter)
 @Controller('funcionalidades')
 export class FuncionalidadesController {
-  constructor(private readonly funcionalidadesService: FuncionalidadesService) {}
+  constructor(
+    private readonly funcionalidadesService: FuncionalidadesService,
+  ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lista todas os Funcionalidades' })
-  async listar(@Req() request:Request): Promise<ResponseDto<Funcionalidades[]>> {
-    const funcionalidades = await this.funcionalidadesService.listarFuncionalidades();
+  @ApiOperation({ summary: 'Lista todas as Funcionalidades' })
+  async listar(
+    @Req() request: Request,
+  ): Promise<ResponseDto<Funcionalidades[]>> {
+    const funcionalidades =
+      await this.funcionalidadesService.listarFuncionalidades();
     return {
       statusCode: HttpStatus.OK,
-      message: 'Funcionalidades listados com sucesso',
+      message: 'Funcionalidades listadas com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: funcionalidades
+      data: funcionalidades,
     };
   }
 
   @Post()
-  @ApiOperation({ summary: 'Cria um novo Funcionalidade' })
+  @ApiOperation({ summary: 'Cria uma nova Funcionalidade' })
   @ApiBody({
     type: CriarFuncionalidadeDto,
     examples: {
       exemplo: {
         summary: 'Exemplo de criação',
-        value: { noFuncionalidade: 'Funcionalidade de teste', deFuncionalidade: 'Descrição dessa funcionalidade de teste', coSistema: 1, icSituacaoAtivo: true },
+        value: {
+          noFuncionalidade: 'Funcionalidade de teste',
+          deFuncionalidade: 'Descrição dessa funcionalidade de teste',
+          coSistema: 1,
+          icSituacaoAtivo: true,
+        },
       },
     },
   })
-  async criar(@Body() dados: CriarFuncionalidadeDto, @Req() request:Request): Promise<ResponseDto<Funcionalidades>> {
-    const funcionalidade = await this.funcionalidadesService.criarFuncionalidade(dados);
+  async criar(
+    @Body() dados: CriarFuncionalidadeDto,
+    @Req() request: Request,
+  ): Promise<ResponseDto<Funcionalidades>> {
+    const funcionalidade =
+      await this.funcionalidadesService.criarFuncionalidade(dados);
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Funcionalidade criada com sucesso',
@@ -67,69 +78,68 @@ export class FuncionalidadesController {
     };
   }
 
-  @Patch()
+  @Patch(':coFuncionalidade')
   @ApiOperation({ summary: 'Atualiza uma funcionalidade existente' })
   @ApiBody({
     type: AtualizarFuncionalidadeDto,
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: {  coFuncionalidade:1, noFuncionalidade: 'Funcionalidade atualizada', deFuncionalidade: 'Descrição dessa funcionalidade de teste atualizada', coSistema: 1},
+        value: { noFuncionalidade: 'Funcionalidade atualizada', deFuncionalidade: 'Descrição dessa funcionalidade de teste atualizada', coSistema: 1},
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarFuncionalidadeDto, @Req() request: Request): Promise<ResponseDto<Funcionalidades>> {
-    const funcionalidadeAtualizado = await this.funcionalidadesService.atualizarFuncionalidade(dados);
+  @ApiParam({ name: 'coFuncionalidade', type: Number, description: 'ID da Funcionalidade' })
+  async atualizar(
+    @Param('coFuncionalidade') id: number,
+    @Body() dados: AtualizarFuncionalidadeDto,
+    @Req() request: Request,
+  ): Promise<ResponseDto<Funcionalidades>> {
+    const funcionalidadeAtualizada =
+      await this.funcionalidadesService.atualizarFuncionalidade(id, dados);
     return {
       statusCode: HttpStatus.OK,
       message: 'Funcionalidade atualizada com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: funcionalidadeAtualizado,
+      data: funcionalidadeAtualizada,
     };
   }
 
-  @Delete()
-  @ApiOperation({ summary: 'Deleta um funcionalidade existente' })
-  @ApiBody({
-    type: DeletarFuncionalidadeDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de deleção',
-        value: { coFuncionalidade: 1 },
-      },
-    },
-  })
-  async deletar(@Body() dados: DeletarFuncionalidadeDto, @Req() request: Request): Promise<ResponseDto<null>> {
-    await this.funcionalidadesService.deletarFuncionalidade(dados.coFuncionalidade);
+  @Delete(':coFuncionalidade')
+  @ApiOperation({ summary: 'Deleta uma funcionalidade existente' })
+  @ApiParam({ name: 'coFuncionalidade', type: Number, description: 'ID da Funcionalidade' })
+  async deletar(
+    @Param('coFuncionalidade') id: number,
+    @Req() request: Request,
+  ): Promise<ResponseDto<null>> {
+    await this.funcionalidadesService.deletarFuncionalidade(id);
     return {
       statusCode: HttpStatus.OK,
       message: 'Funcionalidade deletada com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null
+      data: null,
     };
   }
 
-  @Put()
-  @ApiOperation({ summary: 'Alterna o status ativo/inativo da ação' })
-  @ApiBody({
-    type: AlternarStatusFuncionalidadeDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de alternância de status',
-        value: { coFuncionalidade: 1 },
-      },
-    },
+  @Put(':coFuncionalidade')
+  @ApiOperation({
+    summary: 'Alterna o status ativo/inativo da funcionalidade',
   })
-  async alternarStatus(@Body() dados: AlternarStatusFuncionalidadeDto, @Req() request: Request): Promise<ResponseDto<Funcionalidades>> {
-    const funcionalidadeAtualizado = await this.funcionalidadesService.alternarStatus(dados.coFuncionalidade);
+  @ApiParam({ name: 'coFuncionalidade', type: Number, description: 'ID da Funcionalidade' })
+  async alternarStatus(
+    @Param('coFuncionalidade') id: number,
+    @Req() request: Request,
+  ): Promise<ResponseDto<Funcionalidades>> {
+    const funcionalidadeAtualizada =
+      await this.funcionalidadesService.alternarStatus(id);
     return {
       statusCode: HttpStatus.OK,
       message: 'Status da funcionalidade alternado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: funcionalidadeAtualizado
+      data: funcionalidadeAtualizada,
     };
   }
 }

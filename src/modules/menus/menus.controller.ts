@@ -8,14 +8,13 @@ import {
   Put,
   UseFilters,
   HttpStatus,
-  Req
+  Req,
+  Param,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiParam } from '@nestjs/swagger';
 import {
   CriarMenuDto,
   AtualizarMenuDto,
-  DeletarMenuDto,
-  AlternarStatusDto,
 } from './menus.dto';
 import { MenusService } from './menus.service';
 import { Menus } from './menus.entity';
@@ -23,7 +22,6 @@ import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
 import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
 import { Request } from 'express';
-import { request } from 'http';
 
 @ApiTags('Menus')
 @UseFilters(HttpExceptionFilter)
@@ -32,15 +30,15 @@ export class MenusController {
   constructor(private readonly menusService: MenusService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lista todas os Menus' })
-  async listar(@Req() request:Request): Promise<ResponseDto<Menus[]>> {
+  @ApiOperation({ summary: 'Lista todos os Menus' })
+  async listar(@Req() request: Request): Promise<ResponseDto<Menus[]>> {
     const menus = await this.menusService.listarMenus();
     return {
       statusCode: HttpStatus.OK,
       message: 'Menus listados com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: menus
+      data: menus,
     };
   }
 
@@ -51,84 +49,82 @@ export class MenusController {
     examples: {
       exemplo: {
         summary: 'Exemplo de criação',
-        value: {  noMenu: 'Menu de teste', icSituacaoAtivo: true },
+        value: { noMenu: 'Menu de teste', icSituacaoAtivo: true },
       },
     },
   })
-  async criar(@Body() dados: CriarMenuDto, @Req() request: Request): Promise<ResponseDto<Menus>> {
+  async criar(
+    @Body() dados: CriarMenuDto,
+    @Req() request: Request,
+  ): Promise<ResponseDto<Menus>> {
     const menu = await this.menusService.criarMenu(dados);
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Menu criado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: menu
+      data: menu,
     };
   }
 
-  @Patch()
+  @Patch(':coMenu')
   @ApiOperation({ summary: 'Atualiza um menu existente' })
   @ApiBody({
     type: AtualizarMenuDto,
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: { coMenu:1,  noMenu: 'Menu atualizado' },
+        value: { noMenu: 'Menu atualizado' },
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarMenuDto, @Req() request:Request): Promise<ResponseDto<Menus>> {
-    const menuAtualizado = await this.menusService.atualizarMenu(dados);
+  @ApiParam({ name: 'coMenu', type: Number, description: 'ID do Menu' })
+  async atualizar(
+    @Param('coMenu') id: number,
+    @Body() dados: AtualizarMenuDto,
+    @Req() request: Request,
+  ): Promise<ResponseDto<Menus>> {
+    const menuAtualizado = await this.menusService.atualizarMenu(id, dados);
     return {
       statusCode: HttpStatus.OK,
       message: 'Menu atualizado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: menuAtualizado
+      data: menuAtualizado,
     };
   }
 
-  @Delete()
+  @Delete(':coMenu')
   @ApiOperation({ summary: 'Deleta um menu existente' })
-  @ApiBody({
-    type: DeletarMenuDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de deleção',
-        value: { coMenu: 1 },
-      },
-    },
-  })
-  async deletar(@Body() dados: DeletarMenuDto, @Req() request:Request): Promise<ResponseDto<null>> {
-    await this.menusService.deletarMenu(dados.coMenu);
+  @ApiParam({ name: 'coMenu', type: Number, description: 'ID do Menu' })
+  async deletar(
+    @Param('coMenu') id: number,
+    @Req() request: Request,
+  ): Promise<ResponseDto<null>> {
+    await this.menusService.deletarMenu(id);
     return {
       statusCode: HttpStatus.OK,
       message: 'Menu deletado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null
+      data: null,
     };
   }
 
-  @Put()
-  @ApiOperation({ summary: 'Alterna o status ativo/inativo da ação' })
-  @ApiBody({
-    type: AlternarStatusDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de alternância de status',
-        value: { coMenu: 1 },
-      },
-    },
-  })
-  async alternarStatus(@Body() dados: AlternarStatusDto, @Req() request:Request): Promise<ResponseDto<Menus>> {
-    const menuAtualizado = await this.menusService.alternarStatus(dados.coMenu);
+  @Put(':coMenu')
+  @ApiOperation({ summary: 'Alterna o status ativo/inativo do menu' })
+  @ApiParam({ name: 'coMenu', type: Number, description: 'ID do Menu' })
+  async alternarStatus(
+    @Param('coMenu') id: number,
+    @Req() request: Request,
+  ): Promise<ResponseDto<Menus>> {
+    const menuAtualizado = await this.menusService.alternarStatus(id);
     return {
       statusCode: HttpStatus.OK,
       message: 'Status do menu alternado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: menuAtualizado
+      data: menuAtualizado,
     };
   }
 }

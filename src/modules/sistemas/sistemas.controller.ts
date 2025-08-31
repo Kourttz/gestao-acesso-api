@@ -8,21 +8,21 @@ import {
   Put,
   UseFilters,
   HttpStatus,
-  Req
+  Req,
+  Param,
+  ParseIntPipe
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiParam } from '@nestjs/swagger';
 import {
   CriarSistemaDto,
   AtualizarSistemaDto,
-  DeletarSistemaDto,
-  AlternarStatusSistemaDto,
 } from './sistemas.dto';
 import { SistemasService } from './sistemas.service';
 import { Sistemas } from './sistemas.entity';
 import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
 import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
-import { request, Request } from 'express';
+import { Request } from 'express';
 
 @ApiTags('Sistemas')
 @UseFilters(HttpExceptionFilter)
@@ -32,7 +32,7 @@ export class SistemasController {
 
   @Get()
   @ApiOperation({ summary: 'Lista todos os Sistemas' })
-  async listar(@Req() request:Request): Promise<ResponseDto<Sistemas[]>> {
+  async listar(@Req() request: Request): Promise<ResponseDto<Sistemas[]>> {
     const sistemas = await this.sistemasService.listarSistemas();
     return {
       statusCode: HttpStatus.OK,
@@ -54,7 +54,10 @@ export class SistemasController {
       },
     },
   })
-  async criar(@Body() dados: CriarSistemaDto, @Req() request:Request): Promise<ResponseDto<Sistemas>> {
+  async criar(
+    @Body() dados: CriarSistemaDto,
+    @Req() request: Request
+  ): Promise<ResponseDto<Sistemas>> {
     const sistema = await this.sistemasService.criarSistema(dados);
     return {
       statusCode: HttpStatus.CREATED,
@@ -65,19 +68,24 @@ export class SistemasController {
     };
   }
 
-  @Patch()
-  @ApiOperation({ summary: 'Atualiza uma sistema existente' })
+  @Patch(':coSistema')
+  @ApiOperation({ summary: 'Atualiza um sistema existente' })
   @ApiBody({
     type: AtualizarSistemaDto,
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: { coSistema: 1, noSistema: 'Sistema atualizado'},
+        value: { noSistema: 'Sistema atualizado'},
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarSistemaDto, @Req() request: Request): Promise<ResponseDto<Sistemas>> {
-    const sistemaAtualizado = await this.sistemasService.atualizarSistema(dados);
+  @ApiParam({ name: 'coSistema', type: Number, required: true })
+  async atualizar(
+    @Param('coSistema', ParseIntPipe) coSistema: number,
+    @Body() dados: AtualizarSistemaDto,
+    @Req() request: Request
+  ): Promise<ResponseDto<Sistemas>> {
+    const sistemaAtualizado = await this.sistemasService.atualizarSistema(coSistema, dados);
     return {
       statusCode: HttpStatus.OK,
       message: 'Sistema atualizado com sucesso',
@@ -87,19 +95,14 @@ export class SistemasController {
     };
   }
 
-  @Delete()
+  @Delete(':coSistema')
   @ApiOperation({ summary: 'Deleta um sistema existente' })
-  @ApiBody({
-    type: DeletarSistemaDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de deleção',
-        value: { coSistema: 1 },
-      },
-    },
-  })
-  async deletar(@Body() dados: DeletarSistemaDto, @Req() request:Request): Promise<ResponseDto<null>> {
-    await this.sistemasService.deletarSistema(dados.coSistema);
+  @ApiParam({ name: 'coSistema', type: Number, required: true })
+  async deletar(
+    @Param('coSistema', ParseIntPipe) coSistema: number,
+    @Req() request: Request
+  ): Promise<ResponseDto<null>> {
+    await this.sistemasService.deletarSistema(coSistema);
     return {
       statusCode: HttpStatus.OK,
       message: 'Sistema deletado com sucesso',
@@ -109,19 +112,14 @@ export class SistemasController {
     };
   }
 
-  @Put()
+  @Put(':coSistema')
   @ApiOperation({ summary: 'Alterna o status ativo/inativo do Sistema' })
-  @ApiBody({
-    type: AlternarStatusSistemaDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de alternância de status',
-        value: { coSistema: 1 },
-      },
-    },
-  })
-  async alternarStatus(@Body() dados: AlternarStatusSistemaDto, @Req() request:Request): Promise<ResponseDto<Sistemas>> {
-    const sistemaAtualizado = await this.sistemasService.alternarStatus(dados.coSistema);
+  @ApiParam({ name: 'coSistema', type: Number, required: true })
+  async alternarStatus(
+    @Param('coSistema', ParseIntPipe) coSistema: number,
+    @Req() request: Request
+  ): Promise<ResponseDto<Sistemas>> {
+    const sistemaAtualizado = await this.sistemasService.alternarStatus(coSistema);
     return {
       statusCode: HttpStatus.OK,
       message: 'Status do sistema alternado com sucesso',

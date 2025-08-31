@@ -15,7 +15,6 @@ export class AcoesService {
   }
 
   async criarAcao(dados: Partial<Acoes>): Promise<Acoes> {
-
     if (dados.coAcao) {
       throw new HttpException(
         'Não é permitido informar um ID (coAcao) para a nova ação',
@@ -27,23 +26,15 @@ export class AcoesService {
     return await this.acoesRepository.save(acao);
   }
 
-  async atualizarAcao(dados: Partial<Acoes>): Promise<Acoes> {
-
+  async atualizarAcao(id: number, dados: Partial<Acoes>): Promise<Acoes> {
     if (dados.icSituacaoAtivo !== undefined) {
       throw new HttpException(
-        'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
+        'Não é permitido atualizar icSituacaoAtivo diretamente. Use o endpoint de alternar status.',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    if (!dados.coAcao) {
-      throw new HttpException(
-        'ID (coAcao) não informado para atualização',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const resultado = await this.acoesRepository.update(dados.coAcao, dados);
+    const resultado = await this.acoesRepository.update(id, dados);
 
     if (resultado.affected === 0) {
       throw new HttpException(
@@ -52,9 +43,7 @@ export class AcoesService {
       );
     }
 
-    const acaoAtualizado = await this.acoesRepository.findOneBy({
-      coAcao: dados.coAcao,
-    });
+    const acaoAtualizado = await this.acoesRepository.findOneBy({ coAcao: id });
 
     if (!acaoAtualizado) {
       throw new HttpException(
@@ -66,8 +55,8 @@ export class AcoesService {
     return acaoAtualizado;
   }
 
-  async deletarAcao(coAcao: number): Promise<void> {
-    const resultado = await this.acoesRepository.delete(coAcao);
+  async deletarAcao(id: number): Promise<void> {
+    const resultado = await this.acoesRepository.delete(id);
 
     if (resultado.affected === 0) {
       throw new HttpException(
@@ -77,8 +66,8 @@ export class AcoesService {
     }
   }
 
-  async alternarStatus(coAcao: number): Promise<Acoes> {
-    const acao = await this.acoesRepository.findOneBy({ coAcao });
+  async alternarStatus(id: number): Promise<Acoes> {
+    const acao = await this.acoesRepository.findOneBy({ coAcao: id });
 
     if (!acao) {
       throw new HttpException(

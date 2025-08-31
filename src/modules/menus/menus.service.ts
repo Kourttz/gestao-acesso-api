@@ -15,7 +15,6 @@ export class MenusService {
   }
 
   async criarMenu(dados: Partial<Menus>): Promise<Menus> {
-
     if (dados.coMenu) {
       throw new HttpException(
         'Não é permitido informar um ID (coMenu) para o novo menu',
@@ -27,23 +26,15 @@ export class MenusService {
     return await this.menusRepository.save(menu);
   }
 
-  async atualizarMenu(dados: Partial<Menus>): Promise<Menus> {
-
+  async atualizarMenu(id: number, dados: Partial<Menus>): Promise<Menus> {
     if (dados.icSituacaoAtivo !== undefined) {
       throw new HttpException(
-        'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
+        'Não é permitido atualizar icSituacaoAtivo diretamente. Use o endpoint de alternar status.',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    if (!dados.coMenu) {
-      throw new HttpException(
-        'ID (coMenu) não informado para atualização',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const resultado = await this.menusRepository.update(dados.coMenu, dados);
+    const resultado = await this.menusRepository.update(id, dados);
 
     if (resultado.affected === 0) {
       throw new HttpException(
@@ -52,9 +43,7 @@ export class MenusService {
       );
     }
 
-    const menuAtualizado = await this.menusRepository.findOneBy({
-      coMenu: dados.coMenu,
-    });
+    const menuAtualizado = await this.menusRepository.findOneBy({ coMenu: id });
 
     if (!menuAtualizado) {
       throw new HttpException(
@@ -66,8 +55,8 @@ export class MenusService {
     return menuAtualizado;
   }
 
-  async deletarMenu(coMenu: number): Promise<void> {
-    const resultado = await this.menusRepository.delete(coMenu);
+  async deletarMenu(id: number): Promise<void> {
+    const resultado = await this.menusRepository.delete(id);
 
     if (resultado.affected === 0) {
       throw new HttpException(
@@ -77,8 +66,8 @@ export class MenusService {
     }
   }
 
-  async alternarStatus(coMenu: number): Promise<Menus> {
-    const menu = await this.menusRepository.findOneBy({ coMenu });
+  async alternarStatus(id: number): Promise<Menus> {
+    const menu = await this.menusRepository.findOneBy({ coMenu: id });
 
     if (!menu) {
       throw new HttpException(

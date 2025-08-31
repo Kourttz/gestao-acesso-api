@@ -8,14 +8,13 @@ import {
   Put,
   UseFilters,
   HttpStatus,
-  Req
+  Req,
+  Param,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiParam } from '@nestjs/swagger';
 import {
   CriarAcaoDto,
   AtualizarAcaoDto,
-  DeletarAcaoDto,
-  AlternarStatusDto,
 } from './acoes.dto';
 import { AcoesService } from './acoes.service';
 import { Acoes } from './acoes.entity';
@@ -39,95 +38,93 @@ export class AcoesController {
       message: 'Ações listadas com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: acoes
+      data: acoes,
     };
   }
 
   @Post()
-  @ApiOperation({ summary: 'Cria uma novo Ação' })
+  @ApiOperation({ summary: 'Cria uma nova Ação' })
   @ApiBody({
     type: CriarAcaoDto,
     examples: {
       exemplo: {
         summary: 'Exemplo de criação',
-        value: {  noAcao: 'Ação de teste', icSituacaoAtivo: true },
+        value: { noAcao: 'Ação de teste', icSituacaoAtivo: true },
       },
     },
   })
-  async criar(@Body() dados: CriarAcaoDto,@Req() request:Request): Promise<ResponseDto<Acoes>> {
+  async criar(
+    @Body() dados: CriarAcaoDto,
+    @Req() request: Request,
+  ): Promise<ResponseDto<Acoes>> {
     const acao = await this.acoesService.criarAcao(dados);
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Ação criada com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: acao
+      data: acao,
     };
   }
 
-  @Patch()
+  @Patch(':CoAcao')
   @ApiOperation({ summary: 'Atualiza uma ação existente' })
   @ApiBody({
     type: AtualizarAcaoDto,
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: { coAcao:1, noAcao: 'Ação atualizada' },
+        value: { noAcao: 'Ação atualizada' },
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarAcaoDto,@Req() request:Request): Promise<ResponseDto<Acoes>> {
-    const acaoAtualizada = await this.acoesService.atualizarAcao(dados);
+  @ApiParam({ name: 'coAcao', type: Number, description: 'ID da Ação' })
+  async atualizar(
+    @Param('coAcao') id: number,
+    @Body() dados: AtualizarAcaoDto,
+    @Req() request: Request,
+  ): Promise<ResponseDto<Acoes>> {
+    const acaoAtualizada = await this.acoesService.atualizarAcao(id, dados);
     return {
       statusCode: HttpStatus.OK,
       message: 'Ação atualizada com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: acaoAtualizada
+      data: acaoAtualizada,
     };
   }
 
-  @Delete()
+  @Delete(':coAcao')
   @ApiOperation({ summary: 'Deleta uma ação existente' })
-  @ApiBody({
-    type: DeletarAcaoDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de deleção',
-        value: { coAcao: 1 },
-      },
-    },
-  })
-  async deletar(@Body() dados: DeletarAcaoDto, @Req() request:Request): Promise<ResponseDto<null>> {
-    await this.acoesService.deletarAcao(dados.coAcao);
+  @ApiParam({ name: 'coAcao', type: Number, description: 'ID da Ação' })
+  async deletar(
+    @Param('coAcao') id: number,
+    @Req() request: Request,
+  ): Promise<ResponseDto<null>> {
+    await this.acoesService.deletarAcao(id);
     return {
       statusCode: HttpStatus.OK,
       message: 'Ação deletada com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null
+      data: null,
     };
   }
 
-  @Put()
+  @Put(':coAcao')
   @ApiOperation({ summary: 'Alterna o status ativo/inativo da ação' })
-  @ApiBody({
-    type: AlternarStatusDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de alternância de status',
-        value: { coAcao: 1 },
-      },
-    },
-  })
-  async alternarStatus(@Body() dados: AlternarStatusDto, @Req() request:Request): Promise<ResponseDto<Acoes>> {
-    const acaoAtualizada = await this.acoesService.alternarStatus(dados.coAcao);
+  @ApiParam({ name: 'coAcao', type: Number, description: 'ID da Ação' })
+  async alternarStatus(
+    @Param('coAcao') id: number,
+    @Req() request: Request,
+  ): Promise<ResponseDto<Acoes>> {
+    const acaoAtualizada = await this.acoesService.alternarStatus(id);
     return {
       statusCode: HttpStatus.OK,
       message: 'Status da ação alternado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: acaoAtualizada
+      data: acaoAtualizada,
     };
   }
 }

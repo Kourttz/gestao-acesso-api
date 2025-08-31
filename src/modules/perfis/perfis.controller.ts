@@ -6,11 +6,12 @@ import {
   Patch,
   Delete,
   Put,
+  Param,
   UseFilters,
   HttpStatus,
   Req
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiParam } from '@nestjs/swagger';
 import {
   CriarPerfilDto,
   AtualizarPerfilDto,
@@ -32,7 +33,7 @@ export class PerfisController {
 
   @Get()
   @ApiOperation({ summary: 'Lista todos os Perfis' })
-  async listar(@Req() request:Request): Promise<ResponseDto<Perfis[]>> {
+  async listar(@Req() request: Request): Promise<ResponseDto<Perfis[]>> {
     const perfis = await this.perfisService.listarPerfis();
     return {
       statusCode: HttpStatus.OK,
@@ -54,7 +55,7 @@ export class PerfisController {
       },
     },
   })
-  async criar(@Body() dados: CriarPerfilDto, @Req() request:Request): Promise<ResponseDto<Perfis>> {
+  async criar(@Body() dados: CriarPerfilDto, @Req() request: Request): Promise<ResponseDto<Perfis>> {
     const perfil = await this.perfisService.criarPerfil(dados);
     return {
       statusCode: HttpStatus.CREATED,
@@ -65,19 +66,24 @@ export class PerfisController {
     };
   }
 
-  @Patch()
+  @Patch(':coPerfil')
   @ApiOperation({ summary: 'Atualiza uma perfil existente' })
+  @ApiParam({ name: 'coPerfil', description: 'ID do Perfil a ser atualizado', type: Number })
   @ApiBody({
     type: AtualizarPerfilDto,
     examples: {
       exemplo: {
         summary: 'Exemplo de atualização',
-        value: { coPerfil: 1, noPerfil: 'Perfil atualizada'},
+        value: { noPerfil: 'Perfil atualizado' },
       },
     },
   })
-  async atualizar(@Body() dados: AtualizarPerfilDto, @Req() request:Request): Promise<ResponseDto<Perfis>> {
-    const perfilAtualizado = await this.perfisService.atualizarPerfil(dados);
+  async atualizar(
+    @Param('coPerfil') coPerfil: number,
+    @Body() dados: Partial<Perfis>,
+    @Req() request: Request
+  ): Promise<ResponseDto<Perfis>> {
+    const perfilAtualizado = await this.perfisService.atualizarPerfil({ coPerfil, ...dados });
     return {
       statusCode: HttpStatus.OK,
       message: 'Perfil atualizado com sucesso',
@@ -87,19 +93,14 @@ export class PerfisController {
     };
   }
 
-  @Delete()
+  @Delete(':coPerfil')
   @ApiOperation({ summary: 'Deleta um perfil existente' })
-  @ApiBody({
-    type: DeletarPerfilDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de deleção',
-        value: { coPerfil: 1 },
-      },
-    },
-  })
-  async deletar(@Body() dados: DeletarPerfilDto, @Req() request:Request): Promise<ResponseDto<null>> {
-    await this.perfisService.deletarPerfil(dados.coPerfil);
+  @ApiParam({ name: 'coPerfil', description: 'ID do Perfil a ser deletado', type: Number })
+  async deletar(
+    @Param('coPerfil') coPerfil: number,
+    @Req() request: Request
+  ): Promise<ResponseDto<null>> {
+    await this.perfisService.deletarPerfil(coPerfil);
     return {
       statusCode: HttpStatus.OK,
       message: 'Perfil deletado com sucesso',
@@ -109,22 +110,17 @@ export class PerfisController {
     };
   }
 
-  @Put()
+  @Put(':coPerfil')
   @ApiOperation({ summary: 'Alterna o status ativo/inativo do Perfil' })
-  @ApiBody({
-    type: AlternarStatusPerfilDto,
-    examples: {
-      exemplo: {
-        summary: 'Exemplo de alternância de status',
-        value: { coPerfil: 1 },
-      },
-    },
-  })
-  async alternarStatus(@Body() dados: AlternarStatusPerfilDto, @Req() request:Request): Promise<ResponseDto<Perfis>> {
-    const perfilAtualizado = await this.perfisService.alternarStatus(dados.coPerfil);
+  @ApiParam({ name: 'coPerfil', description: 'ID do Perfil para alternar status', type: Number })
+  async alternarStatus(
+    @Param('coPerfil') coPerfil: number,
+    @Req() request: Request
+  ): Promise<ResponseDto<Perfis>> {
+    const perfilAtualizado = await this.perfisService.alternarStatus(coPerfil);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Status da perfil alternado com sucesso',
+      message: 'Status do perfil alternado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
       data: perfilAtualizado

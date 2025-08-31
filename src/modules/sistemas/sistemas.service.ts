@@ -15,7 +15,6 @@ export class SistemasService {
   }
 
   async criarSistema(dados: Partial<Sistemas>): Promise<Sistemas> {
-
     if (dados.coSistema) {
       throw new HttpException(
         'Não é permitido informar um ID (coSistema) para o novo sistema',
@@ -27,8 +26,10 @@ export class SistemasService {
     return await this.SistemasRepository.save(sistema);
   }
 
-  async atualizarSistema(dados: Partial<Sistemas>): Promise<Sistemas> {
-
+  async atualizarSistema(
+    coSistema: number,
+    dados: Partial<Sistemas>,
+  ): Promise<Sistemas> {
     if (dados.icSituacaoAtivo !== undefined) {
       throw new HttpException(
         'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
@@ -36,14 +37,7 @@ export class SistemasService {
       );
     }
 
-    if (!dados.coSistema) {
-      throw new HttpException(
-        'ID (coSistema) não informado para atualização',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const resultado = await this.SistemasRepository.update(dados.coSistema, dados);
+    const resultado = await this.SistemasRepository.update(coSistema, dados);
 
     if (resultado.affected === 0) {
       throw new HttpException(
@@ -52,18 +46,16 @@ export class SistemasService {
       );
     }
 
-    const sistemaAtualizada = await this.SistemasRepository.findOneBy({
-      coSistema: dados.coSistema,
-    });
+    const sistemaAtualizado = await this.SistemasRepository.findOneBy({ coSistema });
 
-    if (!sistemaAtualizada) {
+    if (!sistemaAtualizado) {
       throw new HttpException(
         'Erro ao recuperar sistema após atualização',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
-    return sistemaAtualizada;
+    return sistemaAtualizado;
   }
 
   async deletarSistema(coSistema: number): Promise<void> {
