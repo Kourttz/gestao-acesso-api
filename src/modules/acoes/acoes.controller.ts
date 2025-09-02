@@ -107,7 +107,6 @@ export class AcoesController {
       message: 'Ação deletada com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null,
     };
   }
 

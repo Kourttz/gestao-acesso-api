@@ -119,7 +119,6 @@ export class FuncionalidadesController {
       message: 'Funcionalidade deletada com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null,
     };
   }
 

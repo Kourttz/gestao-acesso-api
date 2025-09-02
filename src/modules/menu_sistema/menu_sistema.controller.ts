@@ -64,7 +64,6 @@ export class MenuSistemaController {
       message: 'Menus atualizados com sucesso!',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null
     };
   }
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column ,OneToMany} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column ,OneToMany} from 'typeorm';
 import { Usuarios } from '../usuarios/usuarios.entity';
 import { PerfilFuncionalidadeAcao } from '../../modules/perfil_funcionalidade_acao/perfil_funcionalidade_acao.entity'
 
@@ -7,7 +7,7 @@ export class Perfis {
   listarPerfis(): Perfis[] | PromiseLike<Perfis[]> {
       throw new Error('Method not implemented.');
   }
-  @PrimaryColumn({ name: 'co_perfil', type: 'int' })
+  @PrimaryGeneratedColumn({ name: 'co_perfil', type: 'int' })
   coPerfil: number;
 
   @Column({ name: 'no_perfil', type: 'varchar', length: 255 })

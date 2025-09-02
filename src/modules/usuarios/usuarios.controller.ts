@@ -52,8 +52,8 @@ export class UsuariosController {
     @Param('coUsuario', ParseIntPipe) coUsuario: number,
     @Body() dto: AtualizarPerfilUsuarioDto,
     @Req() request:Request
-  ): Promise<ResponseDto<null>> {
-    await this.usuariosService.atualizarPerfilUsuario(
+  ): Promise<ResponseDto<Usuarios>> {
+    const usuarioAtualizado = await this.usuariosService.atualizarPerfilUsuario(
       coUsuario,
       dto.coPerfil,
     );
@@ -62,7 +62,7 @@ export class UsuariosController {
       message: 'Perfil do usuário foi atualizado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null
+      data: usuarioAtualizado
     };
   }
 

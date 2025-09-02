@@ -1,13 +1,12 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
 import { Sistemas } from '../sistemas/sistemas.entity';
 import { PerfilFuncionalidadeAcao } from '../perfil_funcionalidade_acao/perfil_funcionalidade_acao.entity'
 
 @Entity({ name: 'tb_funcionalidades' })
 export class Funcionalidades {
-  @PrimaryColumn({
+  @PrimaryGeneratedColumn({
     name: 'co_funcionalidade',
-    type: 'int',
-    generated: true 
+    type: 'int'
   })
   coFuncionalidade: number;
 

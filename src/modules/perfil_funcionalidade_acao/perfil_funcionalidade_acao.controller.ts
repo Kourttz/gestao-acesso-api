@@ -74,7 +74,6 @@ export class PerfilFuncionalidadeAcaoController {
       message: 'Perfil atualizado com sucesso!',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null
     };
   }
 }

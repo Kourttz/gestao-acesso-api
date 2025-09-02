@@ -107,7 +107,6 @@ export class MenusController {
       message: 'Menu deletado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null,
     };
   }
 

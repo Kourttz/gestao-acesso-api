@@ -1,9 +1,9 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Funcionalidades } from '../funcionalidades/funcionalidades.entity';
 
 @Entity({ name: 'tb_sistemas' })
 export class Sistemas {
-  @PrimaryColumn({ name: 'co_sistema', type: 'int' })
+  @PrimaryGeneratedColumn({ name: 'co_sistema', type: 'int' })
   coSistema: number;
 
   @Column({ name: 'no_sistema', type: 'varchar', length: 255 })

@@ -106,7 +106,6 @@ export class PerfisController {
       message: 'Perfil deletado com sucesso',
       timestamp: getGMT3Timestamp(),
       path: request.url,
-      data: null
     };
   }
 

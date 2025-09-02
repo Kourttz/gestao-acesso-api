@@ -20,20 +20,21 @@ export class UsuariosService {
   async atualizarPerfilUsuario(
     coUsuario: number,
     coPerfil: number,
-  ): Promise<void> {
-
+  ): Promise<Usuarios> {
     const usuario = await this.UsuariosRepository.findOne({
       where: { coUsuario },
     });
-
+  
     if (!usuario) {
       throw new HttpException(
         `Usuário com código ${coUsuario} não encontrado`,
         HttpStatus.NOT_FOUND,
       );
     }
-
-    await this.UsuariosRepository.update(coUsuario, { coPerfil: { coPerfil } });
+  
+    usuario.coPerfil = coPerfil as any; 
+  
+    return await this.UsuariosRepository.save(usuario);
   }
 
 }
