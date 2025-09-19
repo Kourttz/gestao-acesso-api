@@ -75,7 +75,7 @@ gestao-acesso-api/
 <!-- end list -->
 
 ```bash
-git clone https://github.com/Kourttz/gestao-acesso-api.git
+git clone http://172.32.1.71/gitlab/workforce/api_gestao_de_acessos.git
 ```
 
 2.  Instale as dependências

@@ -1,39 +1,50 @@
-version: '3.9'  # versão do compose
-
 services:
-  db:
-    image: postgres:15-alpine
-    container_name: gestao-postgres
+  api_gestao:
+    build: .
+    container_name: api_gestao
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      - PORT=${PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - db_gestao
+    networks:
+      - internal_net
+      - kong-network
+      - kafka-net
+
+  db_gestao:
+    image: postgres:15
+    container_name: ${DB_HOST}
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: DB_Gestao_de_Acessos
-    ports:
-      - '5432:5432'
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     volumes:
       - pgdata:/var/lib/postgresql/data
-
-  api:
-    build: .
-    container_name: gestao-api
-    restart: always
-    depends_on:
-      - db
-    environment:
-      NODE_ENV: development
-      PORT: 3000
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-      DB_DATABASE: DB_Gestao_de_Acessos
-      DB_HOST: db
-      DB_PORT: 5432
-    ports:
-      - '3000:3000'
-    working_dir: /app
-    volumes:
-      - .:/app        
-    command: npm run start
+    networks:
+      - internal_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   pgdata:
+
+networks:
+  internal_net:
+    driver: bridge
+  kong-network:
+    external: true
+  kafka-net:
+    external: true

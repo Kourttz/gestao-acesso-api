@@ -4,7 +4,7 @@ import { seedMenus } from "./menus.seed";
 import { seedPerfis } from "./perfis.seed";
 import { seedUsuarios } from "./usuarios.seed";
 import { seedSistemas } from "./sistemas.seed";
-import { AppDataSource } from "../../data-source";
+import { AppDataSource } from "../../data_source";
 import { seedFuncionalidades } from "./funcionalidades.seed";
 
 async function runSeeds() {
