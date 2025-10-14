@@ -43,7 +43,17 @@ export class Usuarios {
   })
   icSituacaoAtivo: boolean;
 
+  @Column({
+    name: 'nu_filial',
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+    unique: true 
+  })
+  nuFilial: number | null;
+
   @ManyToOne(() => Perfis, (perfil) => perfil.usuarios)
   @JoinColumn({ name: 'co_perfil' })
   coPerfil: Perfis;
+
 }

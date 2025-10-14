@@ -1,33 +1,33 @@
 import { IsNumber, IsString, IsBoolean, Min } from 'class-validator';
 
-export class CriarMenuDto {
-  @IsString()
-  noMenu: string;
+export class CriarGrupoDto {
+    @IsString()
+    noGrupo: string;
 
-  @IsBoolean()
-  icSituacaoAtivo: boolean;
+    @IsBoolean()
+    icSituacaoAtivo: boolean;
 }
 
-export class AtualizarMenuDto {
+export class AtualizarGrupoDto {
     @IsNumber()
     @Min(1)
-    coMenu: number;
+    coGrupo: number;
   
     @IsString()
-    noMenu: string;
+    noGrupo: string;
   
     @IsBoolean()
     icSituacaoAtivo: boolean;
 }
 
-export class DeletarMenuDto {
+export class DeletarGrupoDto {
     @IsNumber()
     @Min(1)
-    coMenu: number;
+    coGrupo: number;
 }
 
 export class AlternarStatusDto {
     @IsNumber()
     @Min(1)
-    coMenu: number;
+    coGrupo: number;
 }

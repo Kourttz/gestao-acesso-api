@@ -34,3 +34,11 @@ export interface PerfilPermissao {
   funcionalidades: FuncionalidadePermissao[];
 }
 
+export interface UsuarioPermissao {
+  co_matricula: number;
+  no_name: string;
+  co_perfil: number;
+  no_perfil: string;
+  funcionalidades: FuncionalidadePermissao[];
+}
+

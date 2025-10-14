@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Post,
   UseFilters,
   HttpStatus,
   Put,
@@ -14,7 +15,7 @@ import { UsuariosService } from './usuarios.service';
 import { Usuarios } from './usuarios.entity';
 import { ResponseDto } from '../../common/filters/response.dto';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
-import { AtualizarPerfilUsuarioDto } from './usuarios.dto';
+import { AtualizarPerfilUsuarioDto, CadastrarPerfilUsuarioDto } from './usuarios.dto';
 import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
 import { Request } from 'express';
 
@@ -34,6 +35,31 @@ export class UsuariosController {
       timestamp: getGMT3Timestamp(),
       path: request.url,
       data: usuarios
+    };
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Cadastrar um novo usuário' })
+  @ApiBody({
+    type: CadastrarPerfilUsuarioDto,
+    examples: {
+      exemplo: {
+        summary: 'Exemplo de cadastro de usuário',
+        value: { noName: 'Cesár Monte', coMatricula: '139495', noEmail: 'cMonte@outlook.com', icSituacaoAtivo: true },
+      },
+    },
+  })
+  async criar(
+    @Body() dados: CadastrarPerfilUsuarioDto,
+    @Req() request: Request
+  ): Promise<ResponseDto<Usuarios>> {
+    const usuario = await this.usuariosService.cadastrarUser(dados);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Usuário cadastrado com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: usuario
     };
   }
 

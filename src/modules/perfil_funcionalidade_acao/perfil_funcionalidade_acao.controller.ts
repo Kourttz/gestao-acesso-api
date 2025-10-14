@@ -12,7 +12,8 @@ import {
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import {
   AtualizarPerfilFuncionalidadeDto,
-  PerfilPermissao
+  PerfilPermissao,
+  UsuarioPermissao
 } from './perfil_funcionalidade_acao.dto';
 import { PerfilFuncionalidadeAcaoService } from './perfil_funcionalidade_acao.service';
 import { ResponseDto } from '../../common/filters/response.dto';
@@ -41,7 +42,7 @@ export class PerfilFuncionalidadeAcaoController {
     };
   }
 
-  @Get(':coPerfil')
+  @Get('perfil/:coPerfil')
   @ApiOperation({ summary: 'Obter permissões agrupadas por perfil' })
   async obterPorPerfil(
     @Param('coPerfil', ParseIntPipe) coPerfil: number,
@@ -51,6 +52,22 @@ export class PerfilFuncionalidadeAcaoController {
     return {
       statusCode: HttpStatus.OK,
       message: 'Acessos do perfil listados com sucesso.',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: dados
+    };
+  }
+
+  @Get('matricula/:coMatricula')
+  @ApiOperation({ summary: 'Obter permissões agrupadas por matricula' })
+  async obterPorMatricula(
+    @Param('coMatricula', ParseIntPipe) coMatricula: number,
+  @Req() request:Request
+  ): Promise<ResponseDto<UsuarioPermissao[]>> {
+    const dados = await this.perfilFuncionalidadeAcaoService.getPermissoesAgrupadasPorMatricula(coMatricula);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Acessos do usuário listados com sucesso.',
       timestamp: getGMT3Timestamp(),
       path: request.url,
       data: dados

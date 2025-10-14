@@ -74,6 +74,7 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
         { name: "no_email", type: "varchar", isNullable: true },
         { name: "ic_situacao_ativo", type: "boolean", isNullable: true },
         { name: "co_perfil", type: "int", isNullable: true },
+        { name: "nu_filial", type: "int", isNullable: true },
       ],
     }));
 
@@ -88,6 +89,27 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
       ],
     }));
 
+    // tb_grupos
+    await queryRunner.createTable(new Table({
+      name: "tb_grupos",
+      columns: [
+        { name: "co_grupo", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
+        { name: "no_grupo", type: "varchar", isNullable: true },
+        { name: "co_matricula_gestor", type: "varchar", isNullable: true },
+        { name: "ic_situacao_ativo", type: "boolean", isNullable: true },
+      ],
+    }));
+
+    // tb_grupo_usuario
+    await queryRunner.createTable(new Table({
+      name: "tb_grupo_usuario",
+      columns: [
+        { name: "co_grupo_usuario", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
+        { name: "co_grupo", type: "int" },
+        { name: "co_usuario", type: "int" },
+      ],
+    }));
+
     // Foreign keys
     await queryRunner.createForeignKeys("tb_menu_sistema", [
       new TableForeignKey({
@@ -99,6 +121,19 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
         columnNames: ["co_sistema"],
         referencedTableName: "tb_sistemas",
         referencedColumnNames: ["co_sistema"],
+      }),
+    ]);
+
+    await queryRunner.createForeignKeys("tb_grupo_usuario", [
+      new TableForeignKey({
+        columnNames: ["co_grupo"],
+        referencedTableName: "tb_grupos",
+        referencedColumnNames: ["co_grupo"],
+      }),
+      new TableForeignKey({
+        columnNames: ["co_usuario"],
+        referencedTableName: "tb_usuarios",
+        referencedColumnNames: ["co_usuario"],
       }),
     ]);
 
@@ -142,6 +177,8 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
     await queryRunner.dropTable("tb_menu_sistema");
     await queryRunner.dropTable("tb_sistemas");
     await queryRunner.dropTable("tb_menus");
+    await queryRunner.dropTable("tb_grupos");
+    await queryRunner.dropTable("tb_grupo_usuario");
   }
 }
 

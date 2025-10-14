@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import { seedAcoes } from "./acoes.seed";
 import { seedMenus } from "./menus.seed";
 import { seedPerfis } from "./perfis.seed";
+import { seedGrupos } from "./grupos.seed";
 import { seedUsuarios } from "./usuarios.seed";
 import { seedSistemas } from "./sistemas.seed";
 import { AppDataSource } from "../../data_source";
@@ -15,6 +16,7 @@ async function runSeeds() {
     await seedAcoes(AppDataSource);
     await seedMenus(AppDataSource);
     await seedPerfis(AppDataSource);
+    await seedGrupos(AppDataSource);
     await seedUsuarios(AppDataSource);
     await seedSistemas(AppDataSource);
     await seedFuncionalidades(AppDataSource);

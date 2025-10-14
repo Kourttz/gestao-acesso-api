@@ -1,4 +1,18 @@
-import { IsNumber, IsString, IsBoolean, Min } from 'class-validator';
+import { IsString, IsEmail, IsBoolean, IsInt, IsNumber, Min } from 'class-validator';
+
+export class CadastrarPerfilUsuarioDto {
+    @IsString()
+    noName: string;
+
+    @IsString()
+    coMatricula: string;
+
+    @IsEmail()
+    noEmail: string;
+
+    @IsBoolean()
+    icSituacaoAtivo: boolean;
+}
 
 export class AtualizarPerfilUsuarioDto {
     @IsNumber()
@@ -10,3 +24,4 @@ export class AtualizarPerfilUsuarioDto {
     coPerfil: number;
 
 }
+
