@@ -11,6 +11,8 @@ import { MenuSistemaModule } from './modules/menu_sistema/menu_sistema.module';
 import { GrupoUsuarioModule } from './modules/grupo_usuario/grupo_usuario.module';
 import { FuncionalidadesModule } from './modules/funcionalidades/funcionalidades.module';
 import { PerfilFuncionalidadeAcaoModule } from './modules/perfil_funcionalidade_acao/perfil_funcionalidade_acao.module';
+import { KafkaModule } from './modules/kafka/kafka.module';
+import { EmpregadosModule } from './modules/empregados/empregados.module';
 
 
 @Module({
@@ -38,7 +40,9 @@ import { PerfilFuncionalidadeAcaoModule } from './modules/perfil_funcionalidade_
     MenuSistemaModule,
     GrupoUsuarioModule,
     FuncionalidadesModule,
-    PerfilFuncionalidadeAcaoModule
+    PerfilFuncionalidadeAcaoModule,
+    EmpregadosModule,
+    KafkaModule,
   ],
   controllers: [],
   providers: [],

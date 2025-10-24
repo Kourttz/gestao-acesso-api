@@ -14,27 +14,40 @@ export class PerfilFuncionalidadeAcaoService {
     private readonly acoesRepository: Repository<Acoes>,
   ) {}
 
+  /**
+   * 
+   * @returns Lista todos os PerfisFuncionalidadesAcoes
+   * 
+   */
   async listarPFA(): Promise<PerfilFuncionalidadeAcao[]> {
     return this.perfilFuncionalidadeAcaoRepository.find({
       relations: ['coPerfil', 'coFuncionalidade', 'coAcao'],
     });
   }
 
+  /**
+   * 
+   * @param coPerfil 
+   * @param funcionalidades 
+   */
   async atualizarOuCadastrar(
       coPerfil: number,
       funcionalidades: Record<number, number[]>,
     ): Promise<void> {
+
       if (!coPerfil) throw new Error('ID do perfil não informado');
       if (!funcionalidades || Object.keys(funcionalidades).length === 0) {
         throw new Error('Nenhuma funcionalidade informada');
       }
 
+      /* Remove todos os registros existentes para o perfil fornecido */
       await this.perfilFuncionalidadeAcaoRepository
         .createQueryBuilder()
         .delete()
         .where('co_perfil = :coPerfil', { coPerfil })
         .execute();
 
+        /* Cria novos registros com base nas funcionalidades e ações fornecidas */
       const novosPFAs = Object.entries(funcionalidades).flatMap(
         ([coFuncionalidade, acoes]) =>
           acoes.map((coAcao) =>
@@ -46,15 +59,22 @@ export class PerfilFuncionalidadeAcaoService {
           ),
       );
 
+      /* Salva os novos registros no banco de dados */
       if (novosPFAs.length > 0) {
         await this.perfilFuncionalidadeAcaoRepository.save(novosPFAs);
       }
     }
-
+  
+  /**
+   * 
+   * @param coPerfil 
+   * @returns 
+   */
   async getPermissoesAgrupadasPorPerfil(coPerfil: number): Promise<PerfilPermissao[]> {
     
     if (!coPerfil) throw new Error('ID do perfil não informado');
 
+    /* Consulta para obter as ações vinculadas ao perfil */
     const registros = await this.acoesRepository
       .createQueryBuilder('a')
       .leftJoin(
@@ -74,9 +94,13 @@ export class PerfilFuncionalidadeAcaoService {
 
     const funcionalidadesMap: Record<number, FuncionalidadePermissao> = {};
 
+    /* Agrupa as ações por funcionalidade */
     registros.forEach((r) => {
+
+      /* Ignora registros sem funcionalidade */
       if (!r.f_co_funcionalidade) return;
 
+      /* Cria a funcionalidade no mapa se ainda não existir */
       if (!funcionalidadesMap[r.f_co_funcionalidade]) {
         funcionalidadesMap[r.f_co_funcionalidade] = {
           co_funcionalidade: r.f_co_funcionalidade,
@@ -87,6 +111,7 @@ export class PerfilFuncionalidadeAcaoService {
         };
       }
 
+      /* Adiciona a ação à funcionalidade */
       if (r.a_co_acao) {
         funcionalidadesMap[r.f_co_funcionalidade].acoes.push({
           co_acao: r.a_co_acao,
@@ -96,11 +121,13 @@ export class PerfilFuncionalidadeAcaoService {
       }
     });
 
+    /* Obtém todas as ações disponíveis */
     const todasAcoes = registros.map((r) => ({
       co_acao: r.a_co_acao,
       no_acao: r.a_no_acao,
     }));
 
+    /* Garante que todas as ações estejam presentes em cada funcionalidade */
     Object.values(funcionalidadesMap).forEach((func) => {
       const existentes = func.acoes.map((a) => a.co_acao);
       todasAcoes.forEach((a) => {
@@ -111,6 +138,7 @@ export class PerfilFuncionalidadeAcaoService {
       func.acoes.sort((a, b) => a.co_acao - b.co_acao);
     });
 
+    /* Retorna o resultado agrupado por perfil */
     return [
       {
         co_perfil: coPerfil,
@@ -120,10 +148,16 @@ export class PerfilFuncionalidadeAcaoService {
     ];
   }
 
+  /**
+   * 
+   * @param coMatricula 
+   * @returns 
+   */
   async getPermissoesAgrupadasPorMatricula(coMatricula: number): Promise<UsuarioPermissao[]> {
     
       if (!coMatricula) throw new Error('Matricula do usuário não informada');
 
+      /* Consulta para obter as ações vinculadas ao perfil do usuário */
       const registros = await this.acoesRepository
           .createQueryBuilder('a')
           .leftJoinAndSelect('tb_perfil_funcionalidade_acao','pfa','pfa.co_acao = a.co_acao')
@@ -139,10 +173,14 @@ export class PerfilFuncionalidadeAcaoService {
           .getRawMany();
 
       const funcionalidadesMap: Record<number, FuncionalidadePermissao> = {};
-
+      
+      /* Agrupa as ações por funcionalidade */
       registros.forEach((r) => {
+
+          /* Ignora registros sem funcionalidade */
           if (!r.f_co_funcionalidade) return;
 
+          /* Cria a funcionalidade no mapa se ainda não existir */
           if (!funcionalidadesMap[r.f_co_funcionalidade]) {
               funcionalidadesMap[r.f_co_funcionalidade] = {
                   co_funcionalidade: r.f_co_funcionalidade,
@@ -153,6 +191,7 @@ export class PerfilFuncionalidadeAcaoService {
               };
           }
 
+          /* Adiciona a ação à funcionalidade */
           if (r.a_co_acao) {
               funcionalidadesMap[r.f_co_funcionalidade].acoes.push({
                   co_acao: r.a_co_acao,
@@ -162,6 +201,7 @@ export class PerfilFuncionalidadeAcaoService {
           }
       });
 
+      /* Obtém todas as ações disponíveis */
       const todasAcoes = Array.from(
           new Map(
               registros.map((r) => [
@@ -171,6 +211,7 @@ export class PerfilFuncionalidadeAcaoService {
           ).values()
       );
 
+      /* Garante que todas as ações estejam presentes em cada funcionalidade */
       Object.values(funcionalidadesMap).forEach((func) => {
           const existentes = func.acoes.map((a) => a.co_acao);
           todasAcoes.forEach((a) => {
@@ -181,14 +222,16 @@ export class PerfilFuncionalidadeAcaoService {
           func.acoes.sort((a, b) => a.co_acao - b.co_acao);
       });
 
-      // Extração do Perfil (co_perfil e no_perfil) do primeiro registro.
+      /* Retorna o resultado agrupado por usuário */
       const perfilRegistro = registros.find((r) => r.p_co_perfil);
+      const coUsuario = perfilRegistro?.u_co_usuario || null;
       const noName = perfilRegistro?.u_no_name || null;
       const coPerfil = perfilRegistro?.p_co_perfil || null;
       const noPerfil = perfilRegistro?.p_no_perfil || '';
-
+      
       return [
-          {
+          {   
+              co_usuario: coUsuario,
               co_matricula: coMatricula,
               no_name: noName,
               co_perfil: coPerfil, 

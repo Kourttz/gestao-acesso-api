@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import {GrupoUsuario } from '../grupo_usuario/grupo_usuario.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { GrupoUsuario } from '../grupo_usuario/grupo_usuario.entity';
+import { Usuarios } from '../usuarios/usuarios.entity'; // Certifique-se de importar corretamente sua Entity de Usuários
 
 @Entity({ name: 'tb_grupos' })
 export class Grupos {
@@ -17,11 +18,21 @@ export class Grupos {
   noGrupo: string;
 
   @Column({ 
-    name: 'co_matricula_gestor',
-    type: 'varchar', 
-    length: 255 
+    name: 'co_usuario_dono',
+    type: 'int',
   })
-  coMatriculaGestor: string;
+  coUsuarioDono: number; 
+  
+  @ManyToOne(() => Usuarios)
+  @JoinColumn({ name: 'co_usuario_dono', referencedColumnName: 'coUsuario' })
+  coDono: Usuarios; 
+  
+  @Column({ 
+    name: 'co_grupo_pai', 
+    type: 'int', 
+    nullable: true 
+  })
+  coGrupoPai: number | null;
 
   @Column({ 
     name: 'ic_situacao_ativo', 

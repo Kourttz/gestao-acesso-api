@@ -10,11 +10,22 @@ export class SistemasService {
     private readonly SistemasRepository: Repository<Sistemas>,
   ) {}
 
+  /**
+   *  
+   * @returns Lista todos os sistemas
+   */
   async listarSistemas(): Promise<Sistemas[]> {
     return this.SistemasRepository.find();
   }
 
+  /**
+   * 
+   * @param dados Dados para criar um novo sistema
+   * @returns 
+   */
   async criarSistema(dados: Partial<Sistemas>): Promise<Sistemas> {
+
+    /* Verifica se o campo coSistema foi fornecido */
     if (dados.coSistema) {
       throw new HttpException(
         'Não é permitido informar um ID (coSistema) para o novo sistema',
@@ -26,10 +37,18 @@ export class SistemasService {
     return await this.SistemasRepository.save(sistema);
   }
 
+  /**
+   * 
+   * @param coSistema ID do sistema a ser atualizado
+   * @param dados 
+   * @returns 
+   */
   async atualizarSistema(
     coSistema: number,
     dados: Partial<Sistemas>,
   ): Promise<Sistemas> {
+
+    /* Impede a atualização direta do campo icSituacaoAtivo */
     if (dados.icSituacaoAtivo !== undefined) {
       throw new HttpException(
         'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
@@ -39,6 +58,7 @@ export class SistemasService {
 
     const resultado = await this.SistemasRepository.update(coSistema, dados);
 
+    /* Verifica se alguma linha foi afetada */
     if (resultado.affected === 0) {
       throw new HttpException(
         'Sistema não encontrado para atualização',
@@ -48,6 +68,7 @@ export class SistemasService {
 
     const sistemaAtualizado = await this.SistemasRepository.findOneBy({ coSistema });
 
+    /* Verifica se o sistema atualizado foi recuperado com sucesso */
     if (!sistemaAtualizado) {
       throw new HttpException(
         'Erro ao recuperar sistema após atualização',
@@ -58,9 +79,15 @@ export class SistemasService {
     return sistemaAtualizado;
   }
 
+  /**
+   *  
+   * @param coSistema 
+   */
   async deletarSistema(coSistema: number): Promise<void> {
+
     const resultado = await this.SistemasRepository.delete(coSistema);
 
+    /* Verifica se alguma linha foi afetada */
     if (resultado.affected === 0) {
       throw new HttpException(
         'Sistema não encontrado para exclusão',
@@ -69,9 +96,15 @@ export class SistemasService {
     }
   }
 
+  /** 
+   * 
+   * @param coSistema ID do sistema para alternar o status
+   */
   async alternarStatus(coSistema: number): Promise<Sistemas> {
+
     const sistema = await this.SistemasRepository.findOneBy({ coSistema });
 
+    /* Verifica se o sistema foi encontrado */
     if (!sistema) {
       throw new HttpException(
         'Sistema não encontrado para alternar status',

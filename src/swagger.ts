@@ -8,7 +8,7 @@ export default function initSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('API GESTÃO DE ACESSOS')
     .setDescription('API responsável por gerenciar os acessos dos usuários aos sistemas')
-    .setVersion('2.3')
+    .setVersion('3.3')
     .addServer(apiPrefix)
     .build();
 

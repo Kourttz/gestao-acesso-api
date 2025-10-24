@@ -10,12 +10,22 @@ export class PerfisService {
     private readonly PerfisRepository: Repository<Perfis>,
   ) {}
 
+  /**
+   * @returns Lista todos os perfis
+   * 
+   */
   async listarPerfis(): Promise<Perfis[]> {
     return this.PerfisRepository.find();
   }
 
+  /**
+   * 
+   * @param dados Dados para criar um novo perfil
+   * @returns 
+   */
   async criarPerfil(dados: Partial<Perfis>): Promise<Perfis> {
 
+    /* Verifica se o campo coPerfil foi fornecido */
     if (dados.coPerfil) {
       throw new HttpException(
         'Não é permitido informar um ID (coPerfil) para o novo perfil',
@@ -27,8 +37,14 @@ export class PerfisService {
     return await this.PerfisRepository.save(perfil);
   }
 
+  /**
+   * 
+   * @param dados 
+   * @returns 
+   */
   async atualizarPerfil(dados: Partial<Perfis>): Promise<Perfis> {
-
+    
+    /* Impede a atualização direta do campo icSituacaoAtivo */
     if (dados.icSituacaoAtivo !== undefined) {
       throw new HttpException(
         'Não é permitido atualizar o campo icSituacaoAtivo diretamente. Use o endpoint específico para alternar o status.',
@@ -36,6 +52,7 @@ export class PerfisService {
       );
     }
 
+    /* Verifica se o ID (coPerfil) foi fornecido */
     if (!dados.coPerfil) {
       throw new HttpException(
         'ID (coPerfil) não informado para atualização',
@@ -45,6 +62,7 @@ export class PerfisService {
 
     const resultado = await this.PerfisRepository.update(dados.coPerfil, dados);
 
+    /* Verifica se alguma linha foi afetada */
     if (resultado.affected === 0) {
       throw new HttpException(
         'Perfil não encontrado para atualização',
@@ -56,6 +74,7 @@ export class PerfisService {
       coPerfil: dados.coPerfil,
     });
 
+    /* Verifica se o perfil atualizado foi recuperado com sucesso */
     if (!perfilAtualizada) {
       throw new HttpException(
         'Erro ao recuperar perfil após atualização',
@@ -66,9 +85,15 @@ export class PerfisService {
     return perfilAtualizada;
   }
 
+  /**
+   * 
+   * @param coPerfil ID do perfil a ser deletado
+   */
   async deletarPerfil(coPerfil: number): Promise<void> {
+
     const resultado = await this.PerfisRepository.delete(coPerfil);
 
+    /* Verifica se algum registro foi afetado */
     if (resultado.affected === 0) {
       throw new HttpException(
         'Perfil não encontrado para exclusão',
@@ -77,9 +102,16 @@ export class PerfisService {
     }
   }
 
+  /**
+   * 
+   * @param coPerfil ID do perfil para alternar o status
+   * @returns 
+   */
   async alternarStatus(coPerfil: number): Promise<Perfis> {
+
     const perfil = await this.PerfisRepository.findOneBy({ coPerfil });
 
+    /* Verifica se o perfil foi encontrado */
     if (!perfil) {
       throw new HttpException(
         'Perfil não encontrado para alternar status',

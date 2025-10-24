@@ -21,22 +21,64 @@ export class GrupoUsuarioService {
     ) {}
 
     /**
-     * Lista todos os grupos com seus respectivos usuários aninhados.
+     * Lista todos os grupos com seus respectivos usuários participantes,
+     * incluindo o nome e a matrícula do dono do grupo.
      */
     async listarTodosGruposComUsuarios(): Promise<any> { 
         
         const gruposComUsuarios = await this.GruposRepository.find({ 
-            relations: ['GruposUsuarios', 'GruposUsuarios.coUsuario'], 
+            // Inclui o relacionamento do dono ('coDono') e dos participantes
+            relations: [
+                'coDono', 
+                'GruposUsuarios', 
+                'GruposUsuarios.coUsuario'
+            ], 
             select: {
                 coGrupo: true,
-                noGrupo: true, 
+                noGrupo: true,
+                /* Seleciona apenas os campos necessários do dono do grupo */ 
+                coDono: {
+                    coUsuario: true,
+                    noName: true,
+                    coMatricula: true,
+                },
+                /* Seleciona apenas os campos necessários dos usuários participantes */
+                GruposUsuarios: {
+                    coUsuario: {
+                        coUsuario: true,
+                        noName: true,
+                        coMatricula: true,
+                    },
+                },
             },
         });
+        
+        const conditions = gruposComUsuarios.filter(grupo => grupo.GruposUsuarios.length > 0);
 
+        /* Verifica se há grupos com usuários */
+        if (conditions.length === 0) {
+            throw new HttpException(
+                'Nenhum grupo com usuários encontrado.',
+                HttpStatus.NOT_FOUND,
+            );
+            
+        }
+        
         return gruposComUsuarios.map(grupo => ({
             coGrupo: grupo.coGrupo,
             noGrupo: grupo.noGrupo,
-            usuarios: grupo.GruposUsuarios.map(gu => gu.coUsuario), 
+            /* Info do dono do grupo */
+            dono: {
+                coUsuario: grupo.coDono.coUsuario,
+                noName: grupo.coDono.noName,
+                coMatricula: grupo.coDono.coMatricula,
+            },
+            /* Lista de usuários participantes do grupo */
+            usuarios: grupo.GruposUsuarios.map(gu => ({
+                coUsuario: gu.coUsuario.coUsuario,
+                noName: gu.coUsuario.noName,
+                coMatricula: gu.coUsuario.coMatricula,
+            })), 
         }));
     }
 
@@ -65,7 +107,12 @@ export class GrupoUsuarioService {
         return vinculos.map(v => v.coUsuario);
     }
 
-    // O método atualizarOuCadastrar permanece o mesmo
+    /** 
+     * Atualiza ou cadastra os vínculos entre um grupo e seus usuários.
+     * @param coGrupo ID do grupo.
+     * @param coUsuariosDto DTO contendo a lista de IDs de usuários.
+     */
+
     async atualizarOuCadastrar(
         coGrupo: number,
         coUsuariosDto: CoUsuariosDto,
@@ -76,6 +123,7 @@ export class GrupoUsuarioService {
         await queryRunner.connect();
         await queryRunner.startTransaction();
 
+        /* Tenta encontrar o grupo pelo ID fornecido */
         try {
             const grupoExiste = await queryRunner.manager.findOne(Grupos, { where: { coGrupo } });
             
@@ -85,7 +133,7 @@ export class GrupoUsuarioService {
                     HttpStatus.NOT_FOUND,
                 );
             }
-
+            /* Remove todos os vínculos existentes para o grupo */
             await queryRunner.manager.delete(GrupoUsuario, {
                 coGrupo: { coGrupo } as Grupos,
             });
@@ -95,6 +143,7 @@ export class GrupoUsuarioService {
                 return;
             }
             
+            /* Cria novos vínculos com os IDs de usuários fornecidos */
             const novosGU: GrupoUsuario[] = coUsuarios.map((coUsuario) => 
                 queryRunner.manager.create(GrupoUsuario, {
                     coGrupo: { coGrupo } as Grupos,
@@ -102,8 +151,9 @@ export class GrupoUsuarioService {
                 })
             );
             
+            /* Salva os novos vínculos no banco de dados */
             await queryRunner.manager.save(novosGU);
-
+            
             await queryRunner.commitTransaction();
         } catch (error) {
             await queryRunner.rollbackTransaction();

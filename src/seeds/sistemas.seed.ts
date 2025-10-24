@@ -11,8 +11,13 @@ export async function seedSistemas(dataSource: DataSource) {
   }
 
   const sistemas = repo.create([
-    { noSistema: "Gestão De Acessos", icSituacaoAtivo: true },
-    { noSistema: "CallCheck", icSituacaoAtivo: true },
+    { noSistema: "Gestão De Acessos", icSituacaoAtivo: true }, // co_sistema: 1
+    { noSistema: "CallCheck", icSituacaoAtivo: true },         // co_sistema: 2
+    { noSistema: "ambulatorio", icSituacaoAtivo: true },       // co_sistema: 3
+    { noSistema: "admin", icSituacaoAtivo: true },             // co_sistema: 4
+    { noSistema: "crm", icSituacaoAtivo: true },               // co_sistema: 5
+    { noSistema: "devs", icSituacaoAtivo: true },              // co_sistema: 6
+    { noSistema: "uniplansul", icSituacaoAtivo: true },        // co_sistema: 7
   ] as Sistemas[]);
 
   await repo.save(sistemas);

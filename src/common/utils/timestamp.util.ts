@@ -1,3 +1,7 @@
+/**
+ * 
+ * @returns Timestamp no formato ISO 8601 ajustado para GMT-3
+ */
 export function getGMT3Timestamp(): string {
   const now = new Date();
   const offset = -3; // GMT-3

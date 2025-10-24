@@ -9,12 +9,22 @@ export class MenusService {
     @InjectRepository(Menus)
     private readonly menusRepository: Repository<Menus>,
   ) {}
-
+  /**
+   *
+   * @returns Lista todos os menus
+   */
   async listarMenus(): Promise<Menus[]> {
     return this.menusRepository.find();
   }
 
+  /**
+   * 
+   * @param dados Dados para criar um novo menu
+   * @returns
+   */
   async criarMenu(dados: Partial<Menus>): Promise<Menus> {
+
+    /* Verifica se o campo coMenu foi fornecido */
     if (dados.coMenu) {
       throw new HttpException(
         'Não é permitido informar um ID (coMenu) para o novo menu',
@@ -27,6 +37,8 @@ export class MenusService {
   }
 
   async atualizarMenu(id: number, dados: Partial<Menus>): Promise<Menus> {
+    
+    /* Impede a atualização direta do campo icSituacaoAtivo */
     if (dados.icSituacaoAtivo !== undefined) {
       throw new HttpException(
         'Não é permitido atualizar icSituacaoAtivo diretamente. Use o endpoint de alternar status.',
@@ -36,6 +48,7 @@ export class MenusService {
 
     const resultado = await this.menusRepository.update(id, dados);
 
+    /* Verifica se alguma linha foi afetada */
     if (resultado.affected === 0) {
       throw new HttpException(
         'Menu não encontrado para atualização',
@@ -45,6 +58,7 @@ export class MenusService {
 
     const menuAtualizado = await this.menusRepository.findOneBy({ coMenu: id });
 
+    /* Verifica se o menu atualizado foi recuperado com sucesso */
     if (!menuAtualizado) {
       throw new HttpException(
         'Erro ao recuperar menu após atualização',
@@ -55,9 +69,16 @@ export class MenusService {
     return menuAtualizado;
   }
 
+  /**
+   * 
+   * @param id ID do menu a ser deletado
+   * @return
+   */
   async deletarMenu(id: number): Promise<void> {
+
     const resultado = await this.menusRepository.delete(id);
 
+    /* Verifica se algum registro foi afetado */
     if (resultado.affected === 0) {
       throw new HttpException(
         'Menu não encontrado para exclusão',
@@ -66,9 +87,16 @@ export class MenusService {
     }
   }
 
+  /**
+   * 
+   * @param id ID do menu para alternar o status
+   * @return Menu com o status alterado
+   */  
   async alternarStatus(id: number): Promise<Menus> {
+
     const menu = await this.menusRepository.findOneBy({ coMenu: id });
 
+    /* Verifica se o menu foi encontrado */
     if (!menu) {
       throw new HttpException(
         'Menu não encontrado para alternar status',

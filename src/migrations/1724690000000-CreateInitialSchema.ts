@@ -95,7 +95,8 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
       columns: [
         { name: "co_grupo", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
         { name: "no_grupo", type: "varchar", isNullable: true },
-        { name: "co_matricula_gestor", type: "varchar", isNullable: true },
+        { name: "co_usuario_dono", type: "int", isNullable: true },
+        { name: "co_grupo_pai", type: "int", isNullable: true },
         { name: "ic_situacao_ativo", type: "boolean", isNullable: true },
       ],
     }));
@@ -107,6 +108,50 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
         { name: "co_grupo_usuario", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
         { name: "co_grupo", type: "int" },
         { name: "co_usuario", type: "int" },
+      ],
+    }));
+
+    await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS sc_bases`);
+
+    
+    await queryRunner.createTable(new Table({
+      name: "sc_bases.tb_empregados",
+      columns: [
+        { name: "id_empregado", type: "int", isPrimary: true, isGenerated: true, generationStrategy: "increment" },
+        { name: "co_matricula", type: "varchar", isNullable: true },
+        { name: "co_matricula_cliente", type: "varchar", isNullable: true },
+        { name: "no_nome", type: "varchar", isNullable: true },
+        { name: "co_cpf", type: "varchar", isNullable: true },
+        { name: "co_funcao", type: "varchar", isNullable: true },
+        { name: "co_matricula_gestor", type: "varchar", isNullable: true },
+        { name: "co_matricula_monitor", type: "varchar", isNullable: true },
+        { name: "co_matricula_alteracao", type: "varchar", isNullable: true },
+        { name: "nu_telefone", type: "varchar", isNullable: true },
+        { name: "nu_telefone2", type: "varchar", isNullable: true },
+        { name: "no_nome_social", type: "varchar", isNullable: true },
+        { name: "ds_sexo", type: "bpchar", length: "1", isNullable: true },
+        { name: "ds_situacao", type: "varchar", isNullable: true },
+        { name: "nu_certificado", type: "varchar", isNullable: true },
+        { name: "ds_dados_adicionais", type: "varchar", isNullable: true },
+        { name: "nu_pis", type: "bigint", isNullable: true },
+        { name: "nu_filial", type: "int", isNullable: true },
+        { name: "id_situacao", type: "int", isNullable: true },
+        { name: "co_bairro", type: "int", isNullable: true },
+        { name: "co_municipio", type: "int", isNullable: true },
+        { name: "co_local_trabalho", type: "int", isNullable: true },
+        { name: "dt_funcao", type: "date", isNullable: true },
+        { name: "dt_nascimento", type: "date", isNullable: true },
+        { name: "dt_admissao", type: "date", isNullable: true },
+        { name: "dt_demissao", type: "date", isNullable: true },
+        { name: "dt_situacao", type: "date", isNullable: true },
+        { name: "dt_hist_alteracao", type: "date", isNullable: true },
+        { name: "dt_alteracao", type: "date", isNullable: true },
+        { name: "hr_jornada_entrada", type: "time", isNullable: true },
+        { name: "hr_jornada_saida", type: "time", isNullable: true },
+        { name: "hr_descanso1", type: "time", isNullable: true },
+        { name: "hr_descanso2", type: "time", isNullable: true },
+        { name: "hr_lanche", type: "time", isNullable: true },
+        { name: "ic_certificado_digital", type: "boolean", isNullable: true },
       ],
     }));
 
@@ -179,6 +224,7 @@ export class CreateInitialSchema1724690000000 implements MigrationInterface {
     await queryRunner.dropTable("tb_menus");
     await queryRunner.dropTable("tb_grupos");
     await queryRunner.dropTable("tb_grupo_usuario");
+    await queryRunner.dropTable("sc_bases.tb_empregados");
   }
 }
 

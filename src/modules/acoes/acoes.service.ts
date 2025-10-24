@@ -10,11 +10,22 @@ export class AcoesService {
     private readonly acoesRepository: Repository<Acoes>,
   ) {}
 
+  /**
+   * 
+   * @returns Lista todas as ações
+   */
   async listarAcoes(): Promise<Acoes[]> {
     return this.acoesRepository.find();
   }
 
+  /**
+   * 
+   * @param dados Dados para criar uma nova ação
+   * @returns 
+   */   
   async criarAcao(dados: Partial<Acoes>): Promise<Acoes> {
+
+    /* Verifica se o campo coAcao foi fornecido */
     if (dados.coAcao) {
       throw new HttpException(
         'Não é permitido informar um ID (coAcao) para a nova ação',
@@ -26,7 +37,15 @@ export class AcoesService {
     return await this.acoesRepository.save(acao);
   }
 
+  /**
+   * 
+   * @param id ID da ação a ser atualizado
+   * @param dados 
+   * @returns 
+   */ 
   async atualizarAcao(id: number, dados: Partial<Acoes>): Promise<Acoes> {
+
+    /* Impede a atualização direta do campo icSituacaoAtivo */
     if (dados.icSituacaoAtivo !== undefined) {
       throw new HttpException(
         'Não é permitido atualizar icSituacaoAtivo diretamente. Use o endpoint de alternar status.',
@@ -36,6 +55,7 @@ export class AcoesService {
 
     const resultado = await this.acoesRepository.update(id, dados);
 
+    /* Verifica se alguma linha foi afetada */
     if (resultado.affected === 0) {
       throw new HttpException(
         'Ação não encontrada para atualização',
@@ -45,6 +65,7 @@ export class AcoesService {
 
     const acaoAtualizado = await this.acoesRepository.findOneBy({ coAcao: id });
 
+    /* Verifica se a ação atualizada foi recuperada com sucesso */
     if (!acaoAtualizado) {
       throw new HttpException(
         'Erro ao recuperar ação após atualização',
@@ -55,9 +76,15 @@ export class AcoesService {
     return acaoAtualizado;
   }
 
+  /**
+   * 
+   * @param id ID da ação a ser deletado
+   */
   async deletarAcao(id: number): Promise<void> {
+
     const resultado = await this.acoesRepository.delete(id);
 
+    /* Verifica se algum registro foi afetado */
     if (resultado.affected === 0) {
       throw new HttpException(
         'Ação não encontrada para exclusão',
@@ -66,9 +93,16 @@ export class AcoesService {
     }
   }
 
+  /** 
+   *  
+   * @param id ID da ação para alternar o status
+   * @return Ação com o status alternado
+   */    
   async alternarStatus(id: number): Promise<Acoes> {
+
     const acao = await this.acoesRepository.findOneBy({ coAcao: id });
 
+    /* Verifica se a ação foi encontrada */
     if (!acao) {
       throw new HttpException(
         'Ação não encontrada para alternar status',

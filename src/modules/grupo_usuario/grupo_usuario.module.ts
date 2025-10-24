@@ -1,5 +1,3 @@
-// src/modules/grupo_usuario/grupo_usuario.module.ts
-
 import { Module } from '@nestjs/common';
 import { GrupoUsuarioController } from './grupo_usuario.controller';
 import { GrupoUsuarioService } from './grupo_usuario.service';

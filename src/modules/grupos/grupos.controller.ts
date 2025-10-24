@@ -22,6 +22,7 @@ import {
   import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
   import { getGMT3Timestamp } from '../../common/utils/timestamp.util';
   import { Request } from 'express';
+  import { CoUsuariosDto } from '../grupo_usuario/grupo_usuario.dto';
   
   @ApiTags('Grupos')
   @UseFilters(HttpExceptionFilter)
@@ -49,7 +50,7 @@ import {
       examples: {
         exemplo: {
           summary: 'Exemplo de criação',
-          value: { noGrupo: 'Grupo de teste', coMatriculaGestor: '129891', icSituacaoAtivo: true },
+          value: { noGrupo: 'Grupo de teste', coGrupoPai: null, coUsuarioDono: 1,  icSituacaoAtivo: true },
         },
       },
     })
@@ -74,7 +75,7 @@ import {
       examples: {
         exemplo: {
           summary: 'Exemplo de atualização',
-          value: { noGrupo: 'Grupo atualizado' , coMatriculaGestor: '129891'},
+          value: { noGrupo: 'Grupo atualizado', icSituacaoAtivo: true },
         },
       },
     })

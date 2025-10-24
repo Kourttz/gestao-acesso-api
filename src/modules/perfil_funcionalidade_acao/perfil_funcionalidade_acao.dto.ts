@@ -35,6 +35,7 @@ export interface PerfilPermissao {
 }
 
 export interface UsuarioPermissao {
+  co_usuario: number;
   co_matricula: number;
   no_name: string;
   co_perfil: number;

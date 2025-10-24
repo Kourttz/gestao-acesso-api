@@ -11,8 +11,8 @@ export async function seedGrupos(dataSource: DataSource) {
   }
 
   const grupos = repo.create([
-    { noGrupo: "Administração", coMatriculaGestor: "129891", icSituacaoAtivo: true },
-    { noGrupo: "Desenvolvimento", coMatriculaGestor: "129891" , icSituacaoAtivo: true },
+    { noGrupo: "Administração", coUsuarioDono: 1, icSituacaoAtivo: true },
+    { noGrupo: "Desenvolvimento", coUsuarioDono: 1, coGrupoPai: 1, icSituacaoAtivo: true },
   ] as Grupos[]);
 
   await repo.save(grupos);

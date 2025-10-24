@@ -8,7 +8,21 @@ import {
 import { Request, Response } from 'express';
 import { getGMT3Timestamp } from '../utils/timestamp.util';
 
-
+/**
+ * Filtro global para capturar exceções HTTP e formatar a resposta de erro.
+ * Retorna um JSON com statusCode, timestamp, path e message.
+ * Também captura exceções não tratadas e retorna um erro 500.
+ * Exemplo de resposta de erro:
+ * {
+ *   "statusCode": 404,
+ *   "timestamp": "2024-06-01T15:30:00-03:00",
+ *   "path": "/api/exemplo",
+ *  "message": "Recurso não encontrado"
+ * }
+ *  
+ * @author 129891 - Renato Vinicius
+ * @date setembro 2025
+ */
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {

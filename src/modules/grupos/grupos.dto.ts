@@ -6,6 +6,14 @@ export class CriarGrupoDto {
 
     @IsBoolean()
     icSituacaoAtivo: boolean;
+    
+    @IsNumber()
+    @Min(1)
+    coGrupoPai?: number;
+
+    @IsNumber()
+    @Min(1)
+    coUsuarioDono: number;
 }
 
 export class AtualizarGrupoDto {
@@ -15,6 +23,14 @@ export class AtualizarGrupoDto {
   
     @IsString()
     noGrupo: string;
+
+    @IsNumber()
+    @Min(1)
+    coGrupoPai?: number;
+
+    @IsNumber()
+    @Min(1)
+    coUsuarioDono: number;
   
     @IsBoolean()
     icSituacaoAtivo: boolean;

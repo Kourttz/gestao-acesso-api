@@ -13,12 +13,19 @@ export class MenuSistemaService {
     private readonly MenuSistemaRepository: Repository<MenuSistema>,
   ) {}
 
+  /**
+   * 
+   * @returns Lista todos os menus sistemas
+   * 
+   */
   async listarMS(): Promise<MenuSistemaResponseDto[]> {
     
+    /* Busca todos os registros de MenuSistema com os relacionamentos necessários */
     const menusSistemas = await this.MenuSistemaRepository.find({
       relations: ['coMenu', 'coSistema'],
     });
 
+    /* Mapeia os resultados para o formato MenuSistemaResponseDto */
     return menusSistemas.map((ms) => {
       const sistemaNome = ms.coSistema.noSistema;
       const menuNome = ms.coMenu.noMenu;
@@ -27,8 +34,10 @@ export class MenuSistemaService {
         .toLowerCase()
         .replace(/\s+/g, '-');
 
+      /* Gera o ID único combinando a seção e o nome do sistema */
       const id = `${section}.${sistemaNome.toLowerCase().replace(/\s+/g, '-')}`;
 
+      /* Retorna o objeto formatado */
       return {
         id,
         label: menuNome,
@@ -40,19 +49,25 @@ export class MenuSistemaService {
     });
   }
 
+  /**
+   * 
+   * @param dados Dados para atualizar ou cadastrar MenuSistema
+   */
   async atualizarOuCadastrar(
     dados: Record<number, number[]>,
   ): Promise<void> {
 
+    /* Remove todos os registros existentes de MenuSistema */
     await this.MenuSistemaRepository.createQueryBuilder()
       .delete()
       .execute();
 
     const novosMS: MenuSistema[] = [];
 
+    /* Itera sobre os dados fornecidos para criar novos registros de MenuSistema */
     for (const [coMenu, sistemas] of Object.entries(dados)) {
       const menuId = Number(coMenu);
-
+      /* Verifica se há sistemas associados ao menu */
       if (sistemas && sistemas.length > 0) {
         sistemas.forEach((coSistema) => {
           novosMS.push(
@@ -66,6 +81,7 @@ export class MenuSistemaService {
     }
 
     if (novosMS.length > 0) {
+      /* Salva os novos registros de MenuSistema no banco de dados */
       await this.MenuSistemaRepository.save(novosMS);
     }
   }
