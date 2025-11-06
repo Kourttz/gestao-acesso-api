@@ -42,6 +42,20 @@ export class AcoesController {
     };
   }
 
+  @Get(':coAcao')
+  @ApiOperation({ summary: 'Obtém uma Ação pelo código' })
+  @ApiParam({ name: 'coAcao', type: Number, description: 'ID da Ação a ser obtida' })
+  async obterPorCodigo(@Req() request: Request, @Param('coAcao') coAcao: number): Promise<ResponseDto<Acoes>> {
+    const acao = await this.acoesService.obterAcaoPorCodigo(coAcao);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Ação obtida com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: acao,
+    };
+  }
+
   @Post()
   @ApiOperation({ summary: 'Cria uma nova Ação' })
   @ApiBody({

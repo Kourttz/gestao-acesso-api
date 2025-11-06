@@ -19,6 +19,24 @@ export class MenusService {
 
   /**
    * 
+   * @param id ID do menu a ser obtido
+   * @returns Obtém um menu pelo seu código
+   */
+  async obterMenuPorCodigo(id: number): Promise<Menus> {
+    const menu = await this.menusRepository.findOneBy({ coMenu: id });
+
+    if (!menu) {
+      throw new HttpException(
+        `Menu com código ${id} não encontrado`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return menu;
+  }
+
+  /**
+   * 
    * @param dados Dados para criar um novo menu
    * @returns
    */

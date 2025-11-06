@@ -44,6 +44,20 @@ export class PerfisController {
     };
   }
 
+  @Get(':coPerfil')
+  @ApiOperation({ summary: 'Obtém um Perfil pelo código' })
+  @ApiParam({ name: 'coPerfil', description: 'ID do Perfil a ser obtido', type: Number })
+  async obterPorCodigo(@Req() request: Request, @Param('coPerfil') coPerfil: number): Promise<ResponseDto<Perfis>> {
+    const perfil = await this.perfisService.obterPerfilPorCodigo(coPerfil);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Perfil obtido com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: perfil
+    };
+  }
+
   @Post()
   @ApiOperation({ summary: 'Cria um novo Perfil' })
   @ApiBody({

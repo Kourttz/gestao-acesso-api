@@ -42,6 +42,20 @@ export class MenusController {
     };
   }
 
+  @Get(':coMenu')
+  @ApiOperation({ summary: 'Obtém um Menu pelo código' })
+  @ApiParam({ name: 'coMenu', type: Number, description: 'ID do Menu a ser obtido' })
+  async obterPorCodigo(@Req() request: Request, @Param('coMenu') coMenu: number): Promise<ResponseDto<Menus>> {
+    const menu = await this.menusService.obterMenuPorCodigo(coMenu);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Menu obtido com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: menu,
+    };
+  }
+
   @Post()
   @ApiOperation({ summary: 'Cria um novo Menu' })
   @ApiBody({

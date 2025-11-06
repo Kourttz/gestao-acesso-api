@@ -2,6 +2,8 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Kafka } from 'kafkajs';
 import { EmpregadosService } from '../empregados/empregados.service';
 import { DebeziumDateUtil } from './utils/debezium-date.util';
+import { createDebeziumConnector } from './utils/kafka.connector';
+import { ConnectorConfig } from './utils/connector.interface';
 
 @Injectable()
 export class KafkaService implements OnModuleInit {
@@ -58,5 +60,8 @@ export class KafkaService implements OnModuleInit {
         }
       },
     });
+  }
+  async criarConnector(config: ConnectorConfig) {
+    return await createDebeziumConnector(config);
   }
 }

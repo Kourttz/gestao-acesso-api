@@ -34,11 +34,14 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - internal_net
+      - kafka-net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    command: postgres -c wal_level=logical -c max_wal_senders=10 -c max_replication_slots=10
+
 
 volumes:
   pgdata:

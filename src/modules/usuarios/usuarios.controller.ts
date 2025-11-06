@@ -38,6 +38,20 @@ export class UsuariosController {
     };
   }
 
+  @Get(':coUsuario')
+  @ApiOperation({ summary: 'Obtém um Usuário pelo código' })
+  async obterPorCodigo(@Req() request:Request, @Param('coUsuario', ParseIntPipe) coUsuario: number): Promise<ResponseDto<Usuarios>> {
+    const usuario = await this.usuariosService.obterUsuarioPorCodigo(coUsuario);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Usuário obtido com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: usuario
+    };
+  }
+
+
   @Post()
   @ApiOperation({ summary: 'Cadastrar um novo usuário' })
   @ApiBody({

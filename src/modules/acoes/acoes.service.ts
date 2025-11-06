@@ -20,6 +20,24 @@ export class AcoesService {
 
   /**
    * 
+   * @param id ID da ação a ser obtida
+   * @returns Obtém uma ação pelo seu código
+   */
+  async obterAcaoPorCodigo(id: number): Promise<Acoes> {
+    const acao = await this.acoesRepository.findOneBy({ coAcao: id });
+
+    if (!acao) {
+      throw new HttpException(
+        `Ação com código ${id} não encontrada`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return acao;
+  }
+
+  /**
+   * 
    * @param dados Dados para criar uma nova ação
    * @returns 
    */   

@@ -20,6 +20,24 @@ export class PerfisService {
 
   /**
    * 
+   * @param coPerfil ID do perfil a ser obtido
+   * @returns Obtém um perfil pelo seu código
+   */
+  async obterPerfilPorCodigo(coPerfil: number): Promise<Perfis> {
+    const perfil = await this.PerfisRepository.findOneBy({ coPerfil });
+
+    if (!perfil) {
+      throw new HttpException(
+        `Perfil com código ${coPerfil} não encontrado`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return perfil;
+  }
+
+  /**
+   * 
    * @param dados Dados para criar um novo perfil
    * @returns 
    */

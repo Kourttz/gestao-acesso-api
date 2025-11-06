@@ -24,6 +24,27 @@ export class UsuariosService {
   }
 
   /**
+   * 
+   * @param coUsuario 
+   * @returns Obtém um usuário pelo seu código
+   */
+  async obterUsuarioPorCodigo(coUsuario: number): Promise<Usuarios> {
+    const usuario =  await this.UsuariosRepository.findOne({
+      where: { coUsuario },
+      relations: ['coPerfil'],
+    });
+
+    if (!usuario) {
+      throw new HttpException(
+        `Usuário com código ${coUsuario} não encontrado`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return usuario;
+  }
+
+  /**
    *  
    * @param dados 
    * @returns 

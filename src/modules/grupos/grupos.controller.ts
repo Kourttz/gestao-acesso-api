@@ -42,6 +42,19 @@ import {
         data: grupos,
       };
     }
+
+    @Get(':coGrupo')
+    @ApiOperation({ summary: 'Obtém um Grupo pelo código' })
+    async obterPorCodigo(@Req() request: Request, @Param('coGrupo') coGrupo: number): Promise<ResponseDto<Grupos>> {
+      const grupo = await this.gruposService.obterGrupoPorCodigo(coGrupo);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Grupo obtido com sucesso',
+        timestamp: getGMT3Timestamp(),
+        path: request.url,
+        data: grupo,
+      };
+    }
   
     @Post()
     @ApiOperation({ summary: 'Cria um novo Grupo' })

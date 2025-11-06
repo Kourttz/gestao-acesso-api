@@ -43,6 +43,20 @@ export class SistemasController {
     };
   }
 
+  @Get(':coSistema')
+  @ApiOperation({ summary: 'Obtém um Sistema pelo código' })
+  @ApiParam({ name: 'coSistema', type: Number, required: true })
+  async obterPorCodigo(@Req() request: Request, @Param('coSistema', ParseIntPipe) coSistema: number): Promise<ResponseDto<Sistemas>> {
+    const sistema = await this.sistemasService.obterSistemaPorCodigo(coSistema);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Sistema obtido com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: sistema
+    };
+  }
+
   @Post()
   @ApiOperation({ summary: 'Cria um novo Sistema' })
   @ApiBody({

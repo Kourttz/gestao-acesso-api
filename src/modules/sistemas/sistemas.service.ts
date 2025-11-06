@@ -20,6 +20,24 @@ export class SistemasService {
 
   /**
    * 
+   * @param coSistema ID do sistema a ser obtido
+   * @returns Obtém um sistema pelo seu código
+   */
+  async obterSistemaPorCodigo(coSistema: number): Promise<Sistemas> {
+    const sistema = await this.SistemasRepository.findOneBy({ coSistema });
+
+    if (!sistema) {
+      throw new HttpException(
+        `Sistema com código ${coSistema} não encontrado`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return sistema;
+  }
+
+  /**
+   * 
    * @param dados Dados para criar um novo sistema
    * @returns 
    */

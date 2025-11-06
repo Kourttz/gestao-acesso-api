@@ -9,6 +9,7 @@ export class GruposService {
     @InjectRepository(Grupos)
     private readonly gruposRepository: Repository<Grupos>,
   ) {}
+
  /**
   * 
   * @returns Lista todos os grupos
@@ -16,6 +17,25 @@ export class GruposService {
   async listarGrupos(): Promise<Grupos[]> {
     return this.gruposRepository.find();
   }
+
+  /**
+   * 
+   * @param id ID do grupo a ser obtido
+   * @returns Obtém um grupo pelo seu código
+   */
+  async obterGrupoPorCodigo(id: number): Promise<Grupos> {
+    const grupo = await this.gruposRepository.findOneBy({ coGrupo: id });
+
+    if (!grupo) {
+      throw new HttpException(
+        `Grupo com código ${id} não encontrado`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return grupo;
+  }
+
   /**
    * 
    * @param dados Dados para criar um novo grupo
@@ -42,6 +62,7 @@ export class GruposService {
     const grupo = this.gruposRepository.create(dados);
     return await this.gruposRepository.save(grupo);
   }
+  
   /**
    * 
    * @param id ID do grupo a ser atualizado

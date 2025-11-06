@@ -47,6 +47,20 @@ export class FuncionalidadesController {
     };
   }
 
+  @Get(':coFuncionalidade')
+  @ApiOperation({ summary: 'Obtém uma Funcionalidade pelo código' })
+  @ApiParam({ name: 'coFuncionalidade', type: Number, description: 'ID da Funcionalidade a ser obtida' })
+  async obterPorCodigo(@Req() request: Request, @Param('coFuncionalidade') coFuncionalidade: number): Promise<ResponseDto<Funcionalidades>> {
+    const funcionalidade = await this.funcionalidadesService.obterFuncionalidadePorCodigo(coFuncionalidade);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Funcionalidade obtida com sucesso',
+      timestamp: getGMT3Timestamp(),
+      path: request.url,
+      data: funcionalidade,
+    };
+  }
+
   @Post()
   @ApiOperation({ summary: 'Cria uma nova Funcionalidade' })
   @ApiBody({

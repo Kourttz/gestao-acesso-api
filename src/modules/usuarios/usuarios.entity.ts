@@ -1,5 +1,6 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn , OneToMany } from 'typeorm';
 import { Perfis } from '../perfis/perfis.entity';
+import { GrupoUsuario } from '../grupo_usuario/grupo_usuario.entity';
 
 @Entity({ name: 'tb_usuarios' })
 export class Usuarios {
@@ -55,5 +56,8 @@ export class Usuarios {
   @ManyToOne(() => Perfis, (perfil) => perfil.usuarios)
   @JoinColumn({ name: 'co_perfil' })
   coPerfil: Perfis;
+
+  @OneToMany(() => GrupoUsuario, (gu) => gu.coUsuario)
+  GruposUsuarios: GrupoUsuario[];
 
 }

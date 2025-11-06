@@ -8,6 +8,8 @@ import { EmpregadosModule } from '../empregados/empregados.module';
   imports: [
     EmpregadosModule,
     TypeOrmModule.forFeature([Empregado]) 
-  ],  providers: [KafkaService],
+  ],  
+  providers: [KafkaService], 
+  exports: [KafkaService],
 })
 export class KafkaModule {}

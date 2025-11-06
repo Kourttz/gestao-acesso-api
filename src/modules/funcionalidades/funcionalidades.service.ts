@@ -9,12 +9,35 @@ export class FuncionalidadesService {
     @InjectRepository(Funcionalidades)
     private readonly funcionalidadesRepository: Repository<Funcionalidades>,
   ) {}
+
   /**
    * 
    * @returns Lista todas as funcionalidades
    */ 
   async listarFuncionalidades(): Promise<Funcionalidades[]> {
     return this.funcionalidadesRepository.find();
+  }
+
+  /**
+   * 
+   * @param id ID da funcionalidade a ser obtida
+   * @returns Obtém uma funcionalidade pelo seu código
+   */
+  async obterFuncionalidadePorCodigo(
+    id: number,
+  ): Promise<Funcionalidades> {
+    const funcionalidade = await this.funcionalidadesRepository.findOneBy({
+      coFuncionalidade: id,
+    });
+
+    if (!funcionalidade) {
+      throw new HttpException(
+        `Funcionalidade com código ${id} não encontrada`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return funcionalidade;
   }
 
   /**
